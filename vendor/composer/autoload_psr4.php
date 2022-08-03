@@ -13,4 +13,6 @@ return array(
     'Controls\\Headers\\' => array($baseDir . '/Controls/Headers'),
     'Controls\\Functions\\' => array($baseDir . '/Controls/Functions'),
     'Controls\\Error\\' => array($baseDir . '/Controls/Error'),
+    'Controls\\Database\\' => array($baseDir . '/Controls/Database'),
+    'Controls\\' => array($baseDir . '/Controls'),
 );

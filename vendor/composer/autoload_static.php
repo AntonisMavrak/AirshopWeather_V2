@@ -30,6 +30,8 @@ class ComposerStaticInitbbf2211cb7a03c741cd5ccd631702aab
             'Controls\\Headers\\' => 17,
             'Controls\\Functions\\' => 19,
             'Controls\\Error\\' => 15,
+            'Controls\\Database\\' => 18,
+            'Controls\\' => 9,
         ),
     );
 
@@ -61,6 +63,14 @@ class ComposerStaticInitbbf2211cb7a03c741cd5ccd631702aab
         'Controls\\Error\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Controls/Error',
+        ),
+        'Controls\\Database\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Controls/Database',
+        ),
+        'Controls\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Controls',
         ),
     );
 
