@@ -7,9 +7,23 @@
     {
       "name": "Stella",
       "email": "email@example.com"
+    },
+    {
+      "name": "Xenofon"
+    },
+    {
+      "name": "Antonis"
     }
   ],
   "require": {
     "mongodb/mongodb": "1.9.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Controls\\Error\\": "Controls/Error/",
+      "Controls\\Headers\\": "Controls/Headers/",
+      "Controls\\Router\\": "Controls/Router/",
+      "Controls\\Functions\\": "Controls/Functions/"
+    }
   }
 }

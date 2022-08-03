@@ -9,4 +9,8 @@ return array(
     'Symfony\\Polyfill\\Php80\\' => array($vendorDir . '/symfony/polyfill-php80'),
     'MongoDB\\' => array($vendorDir . '/mongodb/mongodb/src'),
     'Jean85\\' => array($vendorDir . '/jean85/pretty-package-versions/src'),
+    'Controls\\Router\\' => array($baseDir . '/Controls/Router'),
+    'Controls\\Headers\\' => array($baseDir . '/Controls/Headers'),
+    'Controls\\Functions\\' => array($baseDir . '/Controls/Functions'),
+    'Controls\\Error\\' => array($baseDir . '/Controls/Error'),
 );

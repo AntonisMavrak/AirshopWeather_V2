@@ -24,6 +24,13 @@ class ComposerStaticInitbbf2211cb7a03c741cd5ccd631702aab
         array (
             'Jean85\\' => 7,
         ),
+        'C' => 
+        array (
+            'Controls\\Router\\' => 16,
+            'Controls\\Headers\\' => 17,
+            'Controls\\Functions\\' => 19,
+            'Controls\\Error\\' => 15,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -38,6 +45,22 @@ class ComposerStaticInitbbf2211cb7a03c741cd5ccd631702aab
         'Jean85\\' => 
         array (
             0 => __DIR__ . '/..' . '/jean85/pretty-package-versions/src',
+        ),
+        'Controls\\Router\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Controls/Router',
+        ),
+        'Controls\\Headers\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Controls/Headers',
+        ),
+        'Controls\\Functions\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Controls/Functions',
+        ),
+        'Controls\\Error\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Controls/Error',
         ),
     );
 
