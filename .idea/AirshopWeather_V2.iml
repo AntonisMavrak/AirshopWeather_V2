@@ -4,6 +4,12 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/spec" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/Controls/Database" isTestSource="false" packagePrefix="Controls\Database\" />
+      <sourceFolder url="file://$MODULE_DIR$/Controls/Error" isTestSource="false" packagePrefix="Controls\Error\" />
+      <sourceFolder url="file://$MODULE_DIR$/Controls/Functions" isTestSource="false" packagePrefix="Controls\Functions\" />
+      <sourceFolder url="file://$MODULE_DIR$/Controls/Headers" isTestSource="false" packagePrefix="Controls\Headers\" />
+      <sourceFolder url="file://$MODULE_DIR$/Controls/Pages" isTestSource="false" packagePrefix="Controls\Pages\" />
+      <sourceFolder url="file://$MODULE_DIR$/Controls/Router" isTestSource="false" packagePrefix="Controls\Router\" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
     </content>
     <orderEntry type="inheritedJdk" />

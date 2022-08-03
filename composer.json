@@ -20,12 +20,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Controls\\": "Controls",
       "Controls\\Error\\": "Controls/Error/",
       "Controls\\Headers\\": "Controls/Headers/",
       "Controls\\Router\\": "Controls/Router/",
       "Controls\\Functions\\": "Controls/Functions/",
-      "Controls\\Database\\": "Controls/Database/"
+      "Controls\\Database\\": "Controls/Database/",
+      "Controls\\Pages\\": "Controls/Pages/"
     }
   }
 }
