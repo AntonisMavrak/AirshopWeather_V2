@@ -3,7 +3,7 @@
         'name' => 'airshop/weather_app',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'd61568f3bdc8179076c1a77242be1ad5f52970c5',
+        'reference' => 'ce197c92397e35b91a7af28df84a1c85e95c3351',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'airshop/weather_app' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'd61568f3bdc8179076c1a77242be1ad5f52970c5',
+            'reference' => 'ce197c92397e35b91a7af28df84a1c85e95c3351',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
