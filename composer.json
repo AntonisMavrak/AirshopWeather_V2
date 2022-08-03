@@ -1,0 +1,14 @@
+{
+  "name": "airshop/weather_app",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Stella",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+  }
+}
