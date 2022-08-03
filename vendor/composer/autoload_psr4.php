@@ -15,5 +15,4 @@ return array(
     'Controls\\Functions\\' => array($baseDir . '/Controls/Functions'),
     'Controls\\Error\\' => array($baseDir . '/Controls/Error'),
     'Controls\\Database\\' => array($baseDir . '/Controls/Database'),
-    'Controls\\' => array($baseDir . '/Controls'),
 );

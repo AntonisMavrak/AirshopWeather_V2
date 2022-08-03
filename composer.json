@@ -16,7 +16,9 @@
     }
   ],
   "require": {
-    "mongodb/mongodb": "1.9.0"
+    "mongodb/mongodb": "1.9.0",
+    "ext-json": "*",
+    "ext-mbstring": "*"
   },
   "autoload": {
     "psr-4": {
