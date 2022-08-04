@@ -4,17 +4,14 @@ namespace Controls\Headers;
 
 trait headers
 {
-    public function set_headers($data = 'html')
+    public function set_headers($headerType = 'html')
     {
-        switch ($data) {
-            case 'json':
-                header("Content-type: application/json; charset=utf-8");
-                break;
-            case 'xml':
-                header('Content-Type: application/xml; charset=utf-8');
+        switch (strtolower($headerType)) {
+            case 'html':
+                header("Content-Type: text/html; charset=utf-8");
                 break;
             default:
-                header("Content-Type: text/html; charset=utf-8");
+                header("Content-Type: application/$headerType; charset=utf-8");
         }
     }
 }
