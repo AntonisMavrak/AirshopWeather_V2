@@ -56,9 +56,9 @@ database:
 
    <?php
 
-   $db = (new MongoDB\Client)->test;
+   $indexeddb = (new MongoDB\Client)->test;
 
-   $bucket = $db->selectGridFSBucket();
+   $bucket = $indexeddb->selectGridFSBucket();
 
 The following example selects the custom ``images.files`` bucket in the ``test``
 database with a custom read preference:
@@ -67,9 +67,9 @@ database with a custom read preference:
 
    <?php
 
-   $db = (new MongoDB\Client)->test;
+   $indexeddb = (new MongoDB\Client)->test;
 
-   $imagesBucket = $db->selectGridFSBucket([
+   $imagesBucket = $indexeddb->selectGridFSBucket([
        'bucketName' => 'images',
        'readPreference' => new MongoDB\Driver\ReadPreference(MongoDB\Driver\ReadPreference::RP_SECONDARY),
    ]);

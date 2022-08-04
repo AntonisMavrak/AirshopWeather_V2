@@ -35,9 +35,9 @@ The following example prints the name of a database object:
 
    <?php
 
-   $db = (new MongoDB\Client)->test;
+   $indexeddb = (new MongoDB\Client)->test;
 
-   echo $db->getDatabaseName();
+   echo $indexeddb->getDatabaseName();
 
 The output would then resemble::
 

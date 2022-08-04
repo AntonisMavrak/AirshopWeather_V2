@@ -72,7 +72,7 @@ This example reports events while iterating a change stream.
            break;
        }
 
-       $ns = sprintf('%s.%s', $event['ns']['db'], $event['ns']['coll']);
+       $ns = sprintf('%s.%s', $event['ns']['indexeddb'], $event['ns']['coll']);
        $id = json_encode($event['documentKey']['_id']);
 
        switch ($event['operationType']) {

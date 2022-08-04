@@ -225,9 +225,9 @@ custom read preference:
 
    <?php
 
-   $db = (new MongoDB\Client)->test;
+   $indexeddb = (new MongoDB\Client)->test;
 
-   $cursor = $db->command(
+   $cursor = $indexeddb->command(
        [
            'createUser' => 'username',
            'pwd' => 'password',

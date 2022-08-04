@@ -25,7 +25,7 @@ Definition
    collection in a command, such as when inserting a document into a new
    collection. You may also explicitly create a collection with specific options
    using the :phpmethod:`MongoDB\\Database::createCollection()` method, or using
-   :manual:`db.createCollection() </reference/method/db.createCollection>` in
+   :manual:`indexeddb.createCollection() </reference/method/indexeddb.createCollection>` in
    the :program:`mongo` shell.
 
    Explicitly creating collections enables you to create
@@ -70,9 +70,9 @@ database with document validation criteria:
 
    <?php
 
-   $db = (new MongoDB\Client)->test;
+   $indexeddb = (new MongoDB\Client)->test;
 
-   $result = $db->createCollection('users', [
+   $result = $indexeddb->createCollection('users', [
        'validator' => [
            'username' => ['$type' => 'string'],
            'email' => ['$regex' => '@mongodb\.com$'],
@@ -96,5 +96,5 @@ See Also
 
 - :manual:`create </reference/command/create>` command reference in the MongoDB
   manual
-- :manual:`db.createCollection() </reference/method/db.createCollection>`
+- :manual:`indexeddb.createCollection() </reference/method/indexeddb.createCollection>`
 - :manual:`Time Series Collections </core/timeseries-collections>`

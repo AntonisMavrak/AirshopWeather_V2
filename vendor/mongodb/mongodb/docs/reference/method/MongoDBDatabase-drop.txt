@@ -52,9 +52,9 @@ The following example drops the ``test`` database:
 
    <?php
 
-   $db = (new MongoDB\Client)->test;
+   $indexeddb = (new MongoDB\Client)->test;
 
-   $result = $db->drop();
+   $result = $indexeddb->drop();
 
    var_dump($result);
 

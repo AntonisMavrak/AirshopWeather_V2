@@ -452,7 +452,7 @@ class WatchFunctionalTest extends FunctionalTestCase
             '_id' => $changeStream->current()->_id,
             'operationType' => 'insert',
             'fullDocument' => ['_id' => 1, 'x' => 'foo'],
-            'ns' => ['db' => $this->getDatabaseName(), 'coll' => $this->getCollectionName()],
+            'ns' => ['indexeddb' => $this->getDatabaseName(), 'coll' => $this->getCollectionName()],
             'documentKey' => ['_id' => 1],
         ];
 
@@ -471,7 +471,7 @@ class WatchFunctionalTest extends FunctionalTestCase
             '_id' => $changeStream->current()->_id,
             'operationType' => 'insert',
             'fullDocument' => ['_id' => 2, 'x' => 'bar'],
-            'ns' => ['db' => $this->getDatabaseName(), 'coll' => $this->getCollectionName()],
+            'ns' => ['indexeddb' => $this->getDatabaseName(), 'coll' => $this->getCollectionName()],
             'documentKey' => ['_id' => 2],
         ];
 
@@ -523,7 +523,7 @@ class WatchFunctionalTest extends FunctionalTestCase
             '_id' => $changeStream->current()->_id,
             'operationType' => 'insert',
             'fullDocument' => ['_id' => 1],
-            'ns' => ['db' => $this->getDatabaseName(), 'coll' => $this->getCollectionName()],
+            'ns' => ['indexeddb' => $this->getDatabaseName(), 'coll' => $this->getCollectionName()],
             'documentKey' => ['_id' => 1],
         ];
 
@@ -542,7 +542,7 @@ class WatchFunctionalTest extends FunctionalTestCase
             '_id' => $changeStream->current()->_id,
             'operationType' => 'insert',
             'fullDocument' => ['_id' => 2],
-            'ns' => ['db' => $this->getDatabaseName(), 'coll' => $this->getCollectionName()],
+            'ns' => ['indexeddb' => $this->getDatabaseName(), 'coll' => $this->getCollectionName()],
             'documentKey' => ['_id' => 2],
         ];
 
@@ -574,7 +574,7 @@ class WatchFunctionalTest extends FunctionalTestCase
             '_id' => $changeStream->current()->_id,
             'operationType' => 'insert',
             'fullDocument' => ['_id' => 3],
-            'ns' => ['db' => $this->getDatabaseName(), 'coll' => $this->getCollectionName()],
+            'ns' => ['indexeddb' => $this->getDatabaseName(), 'coll' => $this->getCollectionName()],
             'documentKey' => ['_id' => 3],
         ];
 
@@ -592,7 +592,7 @@ class WatchFunctionalTest extends FunctionalTestCase
             '_id' => $changeStream->current()->_id,
             'operationType' => 'insert',
             'fullDocument' => ['_id' => 4],
-            'ns' => ['db' => $this->getDatabaseName(), 'coll' => $this->getCollectionName()],
+            'ns' => ['indexeddb' => $this->getDatabaseName(), 'coll' => $this->getCollectionName()],
             'documentKey' => ['_id' => 4],
         ];
 
@@ -900,7 +900,7 @@ class WatchFunctionalTest extends FunctionalTestCase
             '_id' => $changeStream->current()->_id,
             'operationType' => 'insert',
             'fullDocument' => ['_id' => 2, 'x' => 'bar'],
-            'ns' => ['db' => $this->getDatabaseName(), 'coll' => $this->getCollectionName()],
+            'ns' => ['indexeddb' => $this->getDatabaseName(), 'coll' => $this->getCollectionName()],
             'documentKey' => ['_id' => 2],
         ];
         $this->assertMatchesDocument($expectedResult, $changeStream->current());
@@ -914,7 +914,7 @@ class WatchFunctionalTest extends FunctionalTestCase
             '_id' => $changeStream->current()->_id,
             'operationType' => 'insert',
             'fullDocument' => ['_id' => 3, 'x' => 'baz'],
-            'ns' => ['db' => $this->getDatabaseName(), 'coll' => $this->getCollectionName()],
+            'ns' => ['indexeddb' => $this->getDatabaseName(), 'coll' => $this->getCollectionName()],
             'documentKey' => ['_id' => 3],
         ];
         $this->assertMatchesDocument($expectedResult, $changeStream->current());
@@ -955,7 +955,7 @@ class WatchFunctionalTest extends FunctionalTestCase
             '_id' => $changeStream->current()->_id,
             'operationType' => 'insert',
             'fullDocument' => ['_id' => 2, 'x' => 'bar'],
-            'ns' => ['db' => $this->getDatabaseName(), 'coll' => $this->getCollectionName()],
+            'ns' => ['indexeddb' => $this->getDatabaseName(), 'coll' => $this->getCollectionName()],
             'documentKey' => ['_id' => 2],
         ];
 
@@ -1001,7 +1001,7 @@ class WatchFunctionalTest extends FunctionalTestCase
             '_id' => $changeStream->current()->_id,
             'operationType' => 'insert',
             'fullDocument' => ['_id' => 2, 'x' => 'bar'],
-            'ns' => ['db' => $this->getDatabaseName(), 'coll' => $this->getCollectionName()],
+            'ns' => ['indexeddb' => $this->getDatabaseName(), 'coll' => $this->getCollectionName()],
             'documentKey' => ['_id' => 2],
         ];
 

@@ -56,10 +56,10 @@ collections from the ``test`` database:
 
    <?php
 
-   $db = (new MongoDB\Client)->test;
+   $indexeddb = (new MongoDB\Client)->test;
 
-   $users = $db->users;
-   $systemProfile = $db->{'system.profile'};
+   $users = $indexeddb->users;
+   $systemProfile = $indexeddb->{'system.profile'};
 
 See Also
 --------

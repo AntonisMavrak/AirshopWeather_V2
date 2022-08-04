@@ -1,4 +1,10 @@
 <?php
-$i_am_a_var = 5;
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+require_once "vendor/autoload.php";
 
-$iam_not_a_var = 10;
+use Controls\Error\errorException;
+
+$error = new errorException();
+set_error_handler([$error, 'error_callback']);
+set_exception_handler([$error, 'except_callback']);

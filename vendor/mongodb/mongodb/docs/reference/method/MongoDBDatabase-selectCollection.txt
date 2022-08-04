@@ -55,9 +55,9 @@ The following example selects the ``users`` collection in the ``test`` database:
 
    <?php
 
-   $db = (new MongoDB\Client)->test;
+   $indexeddb = (new MongoDB\Client)->test;
 
-   $collection = $db->selectCollection('users');
+   $collection = $indexeddb->selectCollection('users');
 
 The following example selects the ``users`` collection in the ``test``
 database with a custom read preference:
@@ -66,9 +66,9 @@ database with a custom read preference:
 
    <?php
 
-   $db = (new MongoDB\Client)->test;
+   $indexeddb = (new MongoDB\Client)->test;
 
-   $users = $db->selectCollection(
+   $users = $indexeddb->selectCollection(
        'users',
        [
            'readPreference' => new MongoDB\Driver\ReadPreference(MongoDB\Driver\ReadPreference::RP_SECONDARY),

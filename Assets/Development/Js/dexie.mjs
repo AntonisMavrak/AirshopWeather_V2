@@ -1264,7 +1264,7 @@ function tempTransaction(db, mode, storeNames, fn) {
         }
         catch (ex) {
             if (ex.name === errnames.InvalidState && db.isOpen() && --db._state.PR1398_maxLoop > 0) {
-                console.warn('Dexie: Need to reopen db');
+                console.warn('Dexie: Need to reopen indexeddb');
                 db._close();
                 return db.open().then(function () { return tempTransaction(db, mode, storeNames, fn); });
             }
@@ -3723,7 +3723,7 @@ function dexieOpen(db) {
     var openCanceller = state.openCanceller;
     function throwIfCancelled() {
         if (state.openCanceller !== openCanceller)
-            throw new exceptions.DatabaseClosed('db.open() was cancelled');
+            throw new exceptions.DatabaseClosed('indexeddb.open() was cancelled');
     }
     var resolveDbReady = state.dbReadyResolve,
     upgradeTransaction = null, wasCreated = false;
@@ -3770,7 +3770,7 @@ function dexieOpen(db) {
                         else {
                             adjustToExistingIndexNames(db, db._dbSchema, tmpTrans);
                             if (!verifyInstalledSchema(db, tmpTrans)) {
-                                console.warn("Dexie SchemaDiff: Schema was extended without increasing the number passed to db.version(). Some queries may fail.");
+                                console.warn("Dexie SchemaDiff: Schema was extended without increasing the number passed to indexeddb.version(). Some queries may fail.");
                             }
                         }
                         generateMiddlewareStacks(db, tmpTrans);
@@ -3863,7 +3863,7 @@ function enterTransactionScope(db, mode, storeNames, parentTransaction, scopeFun
             }
             catch (ex) {
                 if (ex.name === errnames.InvalidState && db.isOpen() && --db._state.PR1398_maxLoop > 0) {
-                    console.warn('Dexie: Need to reopen db');
+                    console.warn('Dexie: Need to reopen indexeddb');
                     db._close();
                     return db.open().then(function () { return enterTransactionScope(db, mode, storeNames, null, scopeFunc); });
                 }
@@ -4646,9 +4646,9 @@ var Dexie$1 =  (function () {
         this.WhereClause = createWhereClauseConstructor(this);
         this.on("versionchange", function (ev) {
             if (ev.newVersion > 0)
-                console.warn("Another connection wants to upgrade database '" + _this.name + "'. Closing db now to resume the upgrade.");
+                console.warn("Another connection wants to upgrade database '" + _this.name + "'. Closing indexeddb now to resume the upgrade.");
             else
-                console.warn("Another connection wants to delete database '" + _this.name + "'. Closing db now to resume the delete request.");
+                console.warn("Another connection wants to delete database '" + _this.name + "'. Closing indexeddb now to resume the delete request.");
             _this.close();
         });
         this.on("blocked", function (ev) {
@@ -4772,7 +4772,7 @@ var Dexie$1 =  (function () {
                 req.onblocked = _this._fireOnBlocked;
             };
             if (hasArguments)
-                throw new exceptions.InvalidArgument("Arguments not allowed in db.delete()");
+                throw new exceptions.InvalidArgument("Arguments not allowed in indexeddb.delete()");
             if (state.isBeingOpened) {
                 state.dbReadyPromise.then(doDelete);
             }

@@ -171,7 +171,7 @@ class AtlasDataLakeSpecTest extends FunctionalTestCase
                 /* Assert that the killCursors command uses the namespace and
                  * cursor ID from the find command reply. */
                 $this->assertSame($databaseName, $event['started']->getDatabaseName());
-                $this->assertSame($databaseName, $command->{'$db'});
+                $this->assertSame($databaseName, $command->{'$indexeddb'});
                 $this->assertObjectHasAttribute('killCursors', $command);
                 $this->assertSame($collectionName, $command->killCursors);
                 $this->assertObjectHasAttribute('cursors', $command);

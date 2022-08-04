@@ -1,6 +1,6 @@
 console.log('ready');
 import {header1} from "../Templates/templates.js";
-import db from './db.js'
+import indexeddb from './indexeddb.js'
 
 let weatherApp = {
     init: () => {
@@ -13,7 +13,7 @@ let weatherApp = {
         return header1(data);
     },
     addToDatabase: async (data) => {
-        return await db[data['collection']]
+        return await indexeddb[data['collection']]
             .add(data['data'])
             .then((id) => {
                 console.log(id);
@@ -36,17 +36,17 @@ let weatherApp = {
         }
     },
     getStoredData: async () => {
-        return await db['shoppingCart'].toArray()
+        return await indexeddb['shoppingCart'].toArray()
     },
     modifyProduct: async (productRef, data) => {
-        return await db['shoppingCart']
+        return await indexeddb['shoppingCart']
             .where('reference')
             .equals(productRef)
             .modify(data)
             .then((result) => {
                 return weatherApp.successHandler('modified: ' + result)
             })
-            .catch(db.ModifyError, (error) => {
+            .catch(indexeddb.ModifyError, (error) => {
                 return weatherApp.errorHandler(error.failures.length + " items failed to modify.");
             })
             .catch((error) => {
@@ -54,7 +54,7 @@ let weatherApp = {
             })
     },
     deleteProduct: async (productRef) => {
-        return await db['shoppingCart']
+        return await indexeddb['shoppingCart']
             .where('reference')
             .equals(productRef)
             .delete()

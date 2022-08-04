@@ -57,7 +57,7 @@ The following example selects the ``test`` database:
 
    $client = new MongoDB\Client;
 
-   $db = $client->selectDatabase('test');
+   $indexeddb = $client->selectDatabase('test');
 
 The following examples selects the ``test`` database with a custom read
 preference:
@@ -68,7 +68,7 @@ preference:
 
    $client = new MongoDB\Client;
 
-   $db = $client->selectDatabase(
+   $indexeddb = $client->selectDatabase(
        'test',
        [
            'readPreference' => new MongoDB\Driver\ReadPreference(MongoDB\Driver\ReadPreference::RP_SECONDARY),

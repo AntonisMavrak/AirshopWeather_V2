@@ -189,7 +189,7 @@ class Collection
     }
 
     /**
-     * Return the collection namespace (e.g. "db.collection").
+     * Return the collection namespace (e.g. "indexeddb.collection").
      *
      * @see https://docs.mongodb.org/manual/faq/developers/#faq-dev-namespace
      * @return string

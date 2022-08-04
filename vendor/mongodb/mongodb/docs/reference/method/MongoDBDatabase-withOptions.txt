@@ -49,9 +49,9 @@ preference:
 
    <?php
 
-   $db = (new MongoDB\Client)->test;
+   $indexeddb = (new MongoDB\Client)->test;
 
-   $newDb = $db->withOptions([
+   $newDb = $indexeddb->withOptions([
        'readPreference' => new MongoDB\Driver\ReadPreference(MongoDB\Driver\ReadPreference::RP_SECONDARY),
    ]);
 

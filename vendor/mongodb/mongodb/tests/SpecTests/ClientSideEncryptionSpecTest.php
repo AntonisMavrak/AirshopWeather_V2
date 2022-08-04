@@ -169,13 +169,13 @@ class ClientSideEncryptionSpecTest extends FunctionalTestCase
      */
     public function testDataKeyAndDoubleEncryption(string $providerName, $masterKey): void
     {
-        $this->setContext(Context::fromClientSideEncryption((object) [], 'db', 'coll'));
+        $this->setContext(Context::fromClientSideEncryption((object) [], 'indexeddb', 'coll'));
         $client = $this->getContext()->getClient();
 
         // This empty call ensures that the key vault is dropped with a majority
         // write concern
         $this->insertKeyVaultData([]);
-        $client->selectCollection('db', 'coll')->drop();
+        $client->selectCollection('indexeddb', 'coll')->drop();
 
         $encryptionOpts = [
             'keyVaultNamespace' => 'keyvault.datakeys',
@@ -189,7 +189,7 @@ class ClientSideEncryptionSpecTest extends FunctionalTestCase
 
         $autoEncryptionOpts = $encryptionOpts + [
             'schemaMap' => [
-                'db.coll' => [
+                'indexeddb.coll' => [
                     'bsonType' => 'object',
                     'properties' => [
                         'encrypted_placeholder' => [
@@ -247,8 +247,8 @@ class ClientSideEncryptionSpecTest extends FunctionalTestCase
         $this->assertInstanceOf(Binary::class, $encrypted);
         $this->assertSame(Binary::TYPE_ENCRYPTED, $encrypted->getType());
 
-        $clientEncrypted->selectCollection('db', 'coll')->insertOne(['_id' => 'local', 'value' => $encrypted]);
-        $hello = $clientEncrypted->selectCollection('db', 'coll')->findOne(['_id' => 'local']);
+        $clientEncrypted->selectCollection('indexeddb', 'coll')->insertOne(['_id' => 'local', 'value' => $encrypted]);
+        $hello = $clientEncrypted->selectCollection('indexeddb', 'coll')->findOne(['_id' => 'local']);
         $this->assertNotNull($hello);
         $this->assertSame('hello ' . $providerName, $hello['value']);
 
@@ -256,7 +256,7 @@ class ClientSideEncryptionSpecTest extends FunctionalTestCase
         $this->assertEquals($encrypted, $encryptedAltName);
 
         $this->expectException(BulkWriteException::class);
-        $clientEncrypted->selectCollection('db', 'coll')->insertOne(['encrypted_placeholder' => $encrypted]);
+        $clientEncrypted->selectCollection('indexeddb', 'coll')->insertOne(['encrypted_placeholder' => $encrypted]);
     }
 
     public static function dataKeyProvider()
@@ -300,9 +300,9 @@ class ClientSideEncryptionSpecTest extends FunctionalTestCase
      */
     public function testExternalKeyVault($withExternalKeyVault): void
     {
-        $this->setContext(Context::fromClientSideEncryption((object) [], 'db', 'coll'));
+        $this->setContext(Context::fromClientSideEncryption((object) [], 'indexeddb', 'coll'));
         $client = $this->getContext()->getClient();
-        $client->selectCollection('db', 'coll')->drop();
+        $client->selectCollection('indexeddb', 'coll')->drop();
 
         $keyVaultCollection = $client->selectCollection(
             'keyvault',
@@ -327,7 +327,7 @@ class ClientSideEncryptionSpecTest extends FunctionalTestCase
 
         $autoEncryptionOpts = $encryptionOpts + [
             'schemaMap' => [
-                'db.coll' => $this->decodeJson(file_get_contents(__DIR__ . '/client-side-encryption/external/external-schema.json')),
+                'indexeddb.coll' => $this->decodeJson(file_get_contents(__DIR__ . '/client-side-encryption/external/external-schema.json')),
             ],
         ];
 
@@ -335,7 +335,7 @@ class ClientSideEncryptionSpecTest extends FunctionalTestCase
         $clientEncryption = $clientEncrypted->createClientEncryption($encryptionOpts);
 
         try {
-            $result = $clientEncrypted->selectCollection('db', 'coll')->insertOne(['encrypted' => 'test']);
+            $result = $clientEncrypted->selectCollection('indexeddb', 'coll')->insertOne(['encrypted' => 'test']);
 
             if ($withExternalKeyVault) {
                 $this->fail('Expected exception to be thrown');
@@ -450,11 +450,11 @@ class ClientSideEncryptionSpecTest extends FunctionalTestCase
      */
     public function testBSONSizeLimitsAndBatchSplitting(Closure $test): void
     {
-        $this->setContext(Context::fromClientSideEncryption((object) [], 'db', 'coll'));
+        $this->setContext(Context::fromClientSideEncryption((object) [], 'indexeddb', 'coll'));
         $client = $this->getContext()->getClient();
 
-        $client->selectCollection('db', 'coll')->drop();
-        $client->selectDatabase('db')->createCollection('coll', ['validator' => ['$jsonSchema' => $this->decodeJson(file_get_contents(__DIR__ . '/client-side-encryption/limits/limits-schema.json'))]]);
+        $client->selectCollection('indexeddb', 'coll')->drop();
+        $client->selectDatabase('indexeddb')->createCollection('coll', ['validator' => ['$jsonSchema' => $this->decodeJson(file_get_contents(__DIR__ . '/client-side-encryption/limits/limits-schema.json'))]]);
 
         $this->insertKeyVaultData([
             $this->decodeJson(file_get_contents(__DIR__ . '/client-side-encryption/limits/limits-key.json')),
@@ -470,7 +470,7 @@ class ClientSideEncryptionSpecTest extends FunctionalTestCase
 
         $clientEncrypted = static::createTestClient(null, [], ['autoEncryption' => $autoEncryptionOpts]);
 
-        $collection = $clientEncrypted->selectCollection('db', 'coll');
+        $collection = $clientEncrypted->selectCollection('indexeddb', 'coll');
 
         $document = json_decode(file_get_contents(__DIR__ . '/client-side-encryption/limits/limits-doc.json'), true);
 
@@ -484,8 +484,8 @@ class ClientSideEncryptionSpecTest extends FunctionalTestCase
     {
         $client = static::createTestClient();
 
-        $client->selectCollection('db', 'view')->drop();
-        $client->selectDatabase('db')->command(['create' => 'view', 'viewOn' => 'coll']);
+        $client->selectCollection('indexeddb', 'view')->drop();
+        $client->selectDatabase('indexeddb')->command(['create' => 'view', 'viewOn' => 'coll']);
 
         $autoEncryptionOpts = [
             'keyVaultNamespace' => 'keyvault.datakeys',
@@ -497,7 +497,7 @@ class ClientSideEncryptionSpecTest extends FunctionalTestCase
         $clientEncrypted = static::createTestClient(null, [], ['autoEncryption' => $autoEncryptionOpts]);
 
         try {
-            $clientEncrypted->selectCollection('db', 'view')->insertOne(['foo' => 'bar']);
+            $clientEncrypted->selectCollection('indexeddb', 'view')->insertOne(['foo' => 'bar']);
             $this->fail('Expected exception to be thrown');
         } catch (BulkWriteException $e) {
             $previous = $e->getPrevious();
@@ -515,16 +515,16 @@ class ClientSideEncryptionSpecTest extends FunctionalTestCase
      */
     public function testCorpus($schemaMap = true): void
     {
-        $this->setContext(Context::fromClientSideEncryption((object) [], 'db', 'coll'));
+        $this->setContext(Context::fromClientSideEncryption((object) [], 'indexeddb', 'coll'));
         $client = $this->getContext()->getClient();
 
-        $client->selectDatabase('db')->dropCollection('coll');
+        $client->selectDatabase('indexeddb')->dropCollection('coll');
 
         $schema = $this->decodeJson(file_get_contents(__DIR__ . '/client-side-encryption/corpus/corpus-schema.json'));
 
         if (! $schemaMap) {
             $client
-                ->selectDatabase('db')
+                ->selectDatabase('indexeddb')
                 ->createCollection('coll', ['validator' => ['$jsonSchema' => $schema]]);
         }
 
@@ -549,7 +549,7 @@ class ClientSideEncryptionSpecTest extends FunctionalTestCase
 
         if ($schemaMap) {
             $autoEncryptionOpts += [
-                'schemaMap' => ['db.coll' => $schema],
+                'schemaMap' => ['indexeddb.coll' => $schema],
             ];
         }
 
@@ -559,7 +559,7 @@ class ClientSideEncryptionSpecTest extends FunctionalTestCase
         $clientEncrypted = static::createTestClient(null, [], ['autoEncryption' => $autoEncryptionOpts]);
         $clientEncryption = $clientEncrypted->createClientEncryption($encryptionOpts);
 
-        $collection = $clientEncrypted->selectCollection('db', 'coll');
+        $collection = $clientEncrypted->selectCollection('indexeddb', 'coll');
 
         $unpreparedFieldNames = [
             '_id',
@@ -584,7 +584,7 @@ class ClientSideEncryptionSpecTest extends FunctionalTestCase
         $this->assertDocumentsMatch($corpus, $corpusDecrypted);
 
         $corpusEncryptedExpected = (array) $this->decodeJson(file_get_contents(__DIR__ . '/client-side-encryption/corpus/corpus-encrypted.json'));
-        $corpusEncryptedActual = $client->selectCollection('db', 'coll')->findOne(['_id' => 'client_side_encryption_corpus'], ['typeMap' => ['root' => 'array', 'document' => stdClass::class, 'array' => 'array']]);
+        $corpusEncryptedActual = $client->selectCollection('indexeddb', 'coll')->findOne(['_id' => 'client_side_encryption_corpus'], ['typeMap' => ['root' => 'array', 'document' => stdClass::class, 'array' => 'array']]);
 
         foreach ($corpusEncryptedExpected as $fieldName => $expectedData) {
             if (in_array($fieldName, $unpreparedFieldNames, true)) {
@@ -748,11 +748,11 @@ class ClientSideEncryptionSpecTest extends FunctionalTestCase
                 'local' => ['key' => new Binary(base64_decode(self::LOCAL_MASTERKEY), 0)],
             ],
             'schemaMap' => [
-                'db.coll' => $this->decodeJson(file_get_contents(__DIR__ . '/client-side-encryption/external/external-schema.json')),
+                'indexeddb.coll' => $this->decodeJson(file_get_contents(__DIR__ . '/client-side-encryption/external/external-schema.json')),
             ],
             'extraOptions' => [
                 'mongocryptdBypassSpawn' => true,
-                'mongocryptdURI' => 'mongodb://localhost:27021/db?serverSelectionTimeoutMS=1000',
+                'mongocryptdURI' => 'mongodb://localhost:27021/indexeddb?serverSelectionTimeoutMS=1000',
                 'mongocryptdSpawnArgs' => ['--pidfilepath=bypass-spawning-mongocryptd.pid', '--port=27021'],
             ],
         ];
@@ -760,7 +760,7 @@ class ClientSideEncryptionSpecTest extends FunctionalTestCase
         $clientEncrypted = static::createTestClient(null, [], ['autoEncryption' => $autoEncryptionOpts]);
 
         try {
-            $clientEncrypted->selectCollection('db', 'coll')->insertOne(['encrypted' => 'test']);
+            $clientEncrypted->selectCollection('indexeddb', 'coll')->insertOne(['encrypted' => 'test']);
             $this->fail('Expected exception to be thrown');
         } catch (BulkWriteException $e) {
             $previous = $e->getPrevious();
@@ -788,12 +788,12 @@ class ClientSideEncryptionSpecTest extends FunctionalTestCase
 
         $clientEncrypted = static::createTestClient(null, [], ['autoEncryption' => $autoEncryptionOpts]);
 
-        $clientEncrypted->selectCollection('db', 'coll')->insertOne(['encrypted' => 'test']);
+        $clientEncrypted->selectCollection('indexeddb', 'coll')->insertOne(['encrypted' => 'test']);
 
         $clientMongocryptd = static::createTestClient('mongodb://localhost:27021');
 
         $this->expectException(ConnectionTimeoutException::class);
-        $clientMongocryptd->selectDatabase('db')->command(['ping' => 1]);
+        $clientMongocryptd->selectDatabase('indexeddb')->command(['ping' => 1]);
     }
 
     /**

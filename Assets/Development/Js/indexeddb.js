@@ -1,12 +1,12 @@
 import Dexie from './dexie.mjs'
 
-export const db = new Dexie('Test_App');
+export const indexeddb = new Dexie('Test_App');
 
-db.version(1).stores({
+indexeddb.version(1).stores({
     'shoppingCart':'reference'
     // header:'name,data',
     // paragraphs: 'name,data',
     // karameles: 'version,update'
 });
 
-export default db;
+export default indexeddb;

@@ -1003,7 +1003,7 @@ class DocumentationExamplesTest extends FunctionalTestCase
             '_id' => $lastChange->_id,
             'operationType' => 'insert',
             'fullDocument' => ['_id' => 1, 'x' => 'foo'],
-            'ns' => ['db' => $this->getDatabaseName(), 'coll' => 'inventory'],
+            'ns' => ['indexeddb' => $this->getDatabaseName(), 'coll' => 'inventory'],
             'documentKey' => ['_id' => 1],
         ];
 
@@ -1028,7 +1028,7 @@ class DocumentationExamplesTest extends FunctionalTestCase
             '_id' => $firstChange->_id,
             'operationType' => 'insert',
             'fullDocument' => ['_id' => 2, 'x' => 'bar'],
-            'ns' => ['db' => $this->getDatabaseName(), 'coll' => 'inventory'],
+            'ns' => ['indexeddb' => $this->getDatabaseName(), 'coll' => 'inventory'],
             'documentKey' => ['_id' => 2],
         ];
 

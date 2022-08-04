@@ -31,7 +31,7 @@ use function array_search;
  * provides methods to access common index options, and allows access to other
  * options through the ArrayAccess interface (write methods are not supported).
  * For information on keys and index options, see the referenced
- * db.collection.createIndex() documentation.
+ * indexeddb.collection.createIndex() documentation.
  *
  * @api
  * @see \MongoDB\Collection::listIndexes()
@@ -93,7 +93,7 @@ class IndexInfo implements ArrayAccess
     }
 
     /**
-     * Return the index namespace (e.g. "db.collection").
+     * Return the index namespace (e.g. "indexeddb.collection").
      *
      * @return string
      */
