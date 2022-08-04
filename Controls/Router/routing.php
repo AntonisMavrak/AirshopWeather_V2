@@ -2,34 +2,47 @@
 
 namespace Controls\Router;
 
+use Controls\Database\Database;
 use Controls\Functions\sanitizer;
 
 class routing
 {
-
     use sanitizer;
-    public function load(): string
+    use Database;
+    public function routing($page)
     {
-        $input = file_get_contents('php://input');
-        $request = $_SERVER['REQUEST_URI'] === ($_SERVER['APP_BASE'] ?? '') ? '/index.html' : $_SERVER['REQUEST_URI'];
+        //        TODO LowerCase transformation
+        $page = mb_strtolower($page);
+        if ((strlen($page) - strlen('.html')) === strrpos($page, '.html')) {
+            $namePage = $this->sanitazePage($page);
+            echo $namePage;
+            $commandCheck = $this->isRegisteredPage($namePage);
+        } else {
+            echo 'den teliwnei se .html';
+            return  false;
+        }
 
-        /* TODO
-            Check if $request exist in database
-        */
-        return !empty($input) ? $this->run_command($input) : $this->routing($request);
     }
 
-    public function routing($request)
+    private function isRegisteredPage($pageName)
     {
-        return $this->sanitizeURI($request);
+        $collection = $this->mongo('pages');
+        $match = [
+            'name' => $pageName
+        ];
+        $options = [
+
+        ];
+
+        $pagesData = $collection->findOne($match, $options);
+
+        if ($pagesData!==null) { // ?
+
+            echo 'vrethike';
+            return true;
+        }
+        echo 'den vrethike';
+        return false;
     }
 
-    public function run_command($input): string
-    {
-        return ("We don't care about this");
-    }
-
-//    public function existInDB($request): bool{
-//
-//    }
 }

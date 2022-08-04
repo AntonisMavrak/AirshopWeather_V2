@@ -4,10 +4,17 @@ namespace Controls\Functions;
 
 trait sanitizer
 {
-    public function sanitizeURI($uri): string
+    public function sanitazePage($uri): string
     {
-        mb_strtolower($uri, 'UTF-8');
-
+        //        TODO get the last word *.html
+        //        TODO replace special chars
+        //        TODO get the last word with out .html
+        $words = explode('/', $uri);
+        $lastWord = array_pop($words);
+        $lastWord = preg_replace("/[^a-zα-ωά-ώ\d\/\-\._]+/u", '', $lastWord);
+        return preg_replace("/\.html$/", '', $lastWord);
     }
+
+
 
 }

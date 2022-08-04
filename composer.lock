@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4e3c8e6682ad6ba29695506349901d9c",
+    "content-hash": "9a339e802d6629deac3a4c0a4b1bbb08",
     "packages": [
         {
             "name": "jean85/pretty-package-versions",
@@ -224,7 +224,10 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "ext-json": "*",
+        "ext-mbstring": "*"
+    },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"
 }
