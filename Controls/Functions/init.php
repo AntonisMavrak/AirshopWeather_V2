@@ -16,9 +16,11 @@ class init
     public function runCommand($input,$method){
         $input=json_decode($input,true);
         switch ($input['flag']){
-            case 'register':register($input);
+            case 'register':$register= new User();
+                $register->register($input);
                 break;
-            case'login':login($input);
+            case'login':$login= new User();
+                $login->login($input);
                 break;
             case'history':saveSearch($input);
                 break;

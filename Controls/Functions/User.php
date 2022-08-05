@@ -8,8 +8,10 @@ class User
 {
     use Database;
 
-    public function register($name, $password)
+    public function register($input)
     {
+        $name=$input['name'];
+        $password=$input['password'];
         if ($this->isRegisteredUser($name) !== null) {
             echo '<script>alert("User already exists")</script>';
         } else {
@@ -24,13 +26,15 @@ class User
 
     }
 
-    public function login($name, $password)
+    public function login($input)
     {
+        $name=$input['name'];
+        $password=$input['password'];
         $existingUser = $this->isRegisteredUser($name);
         if ($existingUser !== null) {
             if ($password === $existingUser["password"]){
-                $_SESSION["name"] = $name;
-                $_SESSION["id"] = $existingUser["id"];
+//                $_SESSION["name"] = $name;
+//                $_SESSION["id"] = $existingUser["id"];
                 echo '<script>alert("Successfully logged in!!")</script>';
             }
         }else{
@@ -50,7 +54,7 @@ class User
         ];
         $exist = $collection->findOne($match, $options);
 
-        return exist;
+        return $exist;
 
     }
 
