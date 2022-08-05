@@ -3,15 +3,18 @@
 namespace Controls\Functions;
 
 use Controls\Router\routing;
+use Controls\Functions\User;
 
 class init
 {
+
     public function load()
     {
         $router = new routing();
         $input = file_get_contents('php://input');
         $request = $_SERVER['REQUEST_URI'] === ($_SERVER['APP_BASE'] ?? '') ? '/index.html' : $_SERVER['REQUEST_URI'];
         return !empty($input) ? $this->runCommand($input) : $router->routing($request);
+
     }
 
 //prepi na gini sanitaze to uri kai ta data;

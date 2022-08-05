@@ -10,7 +10,7 @@ class User
 
     public function register($name, $password)
     {
-        if ($this->isRegisteredUser($name)) {
+        if ($this->isRegisteredUser($name) !== null) {
             echo '<script>alert("User already exists")</script>';
         } else {
             $collection = $this->mongo('users');
@@ -26,13 +26,20 @@ class User
 
     public function login($name, $password)
     {
-        if ($this->isRegisteredUser($name)) {
-
+        $existingUser = $this->isRegisteredUser($name);
+        if ($existingUser !== null) {
+            if ($password === $existingUser["password"]){
+                $_SESSION["name"] = $name;
+                $_SESSION["id"] = $existingUser["id"];
+                echo '<script>alert("Successfully logged in!!")</script>';
+            }
+        }else{
+            echo '<script>alert("User does not exist")</script>';
         }
 
     }
 
-    public function isRegisteredUser($name): bool
+    public function isRegisteredUser($name)
     {
         $collection = $this->mongo('users');
         $match = [
@@ -41,12 +48,9 @@ class User
         $options = [
 
         ];
-        $exist = $collection->find($match, $options);
+        $exist = $collection->findOne($match, $options);
 
-        if ($exist !== null) {
-            return true;
-        }
-        return false;
+        return exist;
 
     }
 
