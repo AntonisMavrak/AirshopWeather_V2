@@ -15,7 +15,6 @@ trait Database
             $_SERVER['APP_DB_ADDRESS'] . ':' .
             $_SERVER['APP_DB_PORT'] . '/?authSource=' .
             $_SERVER['APP_DB_AUTH']);
-        
         $db = $mongoConnection->selectDatabase('Weather');
         return $db->selectCollection($mongoCollection);
     }

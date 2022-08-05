@@ -13,7 +13,8 @@ set_exception_handler([$error,'except_callback']);
 
 $load= new Controls\Functions\init();
 
-if($load->load()===false){
-    throw new \ErrorException("command not found");
-}
+//if($load->load()===false){
+//    throw new \ErrorException("command not found");
+//}
 
+var_dump($load->load()) ;
