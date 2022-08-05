@@ -8,6 +8,49 @@ class User
 {
     use Database;
 
+    public function register($name, $password)
+    {
+        if ($this->isRegisteredUser($name)) {
+            echo '<script>alert("User already exists")</script>';
+        } else {
+            $collection = $this->mongo('users');
+            try {
+                $collection->insertOne(['name' => $name, 'password' => $password]);
+                echo '<script>alert("Registered successfully")</script>';
+            } catch (Exception $e) {
+                echo '<script>alert("Something went wrong")</script>';
+            }
+        }
+
+    }
+
+    public function login($name, $password)
+    {
+        if ($this->isRegisteredUser($name)) {
+
+        }
+
+    }
+
+    public function isRegisteredUser($name): bool
+    {
+        $collection = $this->mongo('users');
+        $match = [
+            'name' => $name
+        ];
+        $options = [
+
+        ];
+        $exist = $collection->find($match, $options);
+
+        if ($exist !== null) {
+            return true;
+        }
+        return false;
+
+    }
+
+
     public function saveSearch($input)
     {
         // TODO connect to DB
