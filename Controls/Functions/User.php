@@ -19,7 +19,7 @@ class User
             try {
                 $collection->insertOne(['name' => $name, 'password' => $password]);
                 echo '<script>alert("Registered successfully")</script>';
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 echo '<script>alert("Something went wrong")</script>';
             }
         }

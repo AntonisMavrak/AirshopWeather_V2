@@ -3,6 +3,7 @@
 namespace Controls\Functions;
 
 use Controls\Database\Database;
+use MongoDB\BSON\UTCDateTime;
 
 class weatherData
 {
@@ -18,29 +19,34 @@ class weatherData
 
     private function chekData($input, $collection)
     {
-        $match = [
-            'location' => $input['location']
-        ];
-        $options = [
 
-        ];
-        $weatherData = $collection->findOne($match, $options);
-        return ($weatherData === NULL) ? false : $weatherData;
+            $match = [
+                'location' => $input['location']
+            ];
+            $options = [
+
+            ];
+        try {
+            $weatherData = $collection->findOne($match, $options);
+            return ($weatherData === NULL) ? false : $weatherData;
+        }catch (\Exception $e){
+            var_dump($e);
+        }
     }
 
     private function recordData($input, $collection)
     {
-
-        if ($this->chekData($input, $collection)===NULL)
+        if ($this->chekData($input, $collection)===false)
         {
             try {
 
                 $insertData = $collection->insertOne([              //ama kani kapoios request bori na gemisi thn bash
+                    'expireAT' => date('j-m-y h-i-s'),
                     'location' => $input['location'],               //prepi na doume an kapoios vali dika tou data sto request kai oxi apo to openWeather opote isos prepi na valoume kapoio flag metaji mas
                     'temperature' => $input['temperature']
                 ]);
                 return true;
-            } catch (MongoCursorException $e) {
+            } catch (\MongoCursorException $e) {
                 echo "error message: " . $e->getMessage() . "\n";
                 echo "error code: " . $e->getCode() . "\n";
             }
