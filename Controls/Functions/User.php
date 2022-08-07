@@ -62,7 +62,7 @@ class User
     public function saveSearch($input)
     {
         // TODO connect to DB
-        $collection = $this->mongo('user');
+        $collection = $this->mongo('users');
 
         // TODO find user
         $match = [
@@ -95,7 +95,7 @@ class User
     private function showSearch($input)
     {
         // TODO connect to DB
-        $collection = $this->mongo('user');
+        $collection = $this->mongo('users');
 
         // TODO check if page with name exists
         $match = [
