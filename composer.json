@@ -19,7 +19,6 @@
     "mongodb/mongodb": "1.9.0",
     "ext-json": "*",
     "ext-mbstring": "*",
-    "ext-mongo": "*",
     "ext-mongodb": "*"
   },
   "autoload": {
