@@ -18,14 +18,14 @@ class init
     public function runCommand($input,$method){
         $input=json_decode($input,true);
         $input =$this->sanitazeData($input);
+        $user= new User();
+
         switch ($input['flag']){
-            case 'register':$register= new User();
-                $register->register($input);
+            case 'register': $user->register($input);
                 break;
-            case'login':$login= new User();
-                $login->login($input);
+            case'login': $user->login($input);
                 break;
-            case'history':saveSearch($input);
+            case'history': $user->saveSearch($input);
                 break;
             case 'saved_data':$data= new weatherData();
                 return$data->handleData($input,$method);
