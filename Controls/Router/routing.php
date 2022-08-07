@@ -15,8 +15,7 @@ class routing
         $page = mb_strtolower($page);
         if ((strlen($page) - strlen('.html')) === strrpos($page, '.html')) {
             $namePage = $this->sanitazePage($page);
-            echo $namePage;
-            $commandCheck = $this->isRegisteredPage($namePage);
+            return  $this->isRegisteredPage($namePage);
         } else {
             echo 'den teliwnei se .html';
             return  false;
@@ -37,11 +36,8 @@ class routing
         $pagesData = $collection->findOne($match, $options);
 
         if ($pagesData!==null) { // ?
-
-            echo 'vrethike';
             return true;
         }
-        echo 'den vrethike';
         return false;
     }
 

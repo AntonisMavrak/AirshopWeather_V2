@@ -64,8 +64,30 @@ let weatherApp = {
     },
     refreshCart(){
         console.log('Cart is Refreshed !!!!!')
+    },
+
+    worker:async ()=>{
+        const myWorker =new Worker('./Assets/Development/Workers/api.js');
+        let dataJson;
+        let message = {
+            'function': 'start',
+            'message': 'starting api'
+        }
+        myWorker.postMessage(message);
+        myWorker.onmessage = (message) => {
+            dataJson=message.data;
+             return dataJson=JSON.parse(dataJson);
+
+
+
+        }
+
     }
 }
+
+console.log(a);
+weatherApp.worker();
+
 
 weatherApp.init();
 
@@ -105,10 +127,10 @@ weatherApp.init();
 //     })
 
 // TODO delete stored data
-weatherApp.deleteProduct(1234567555)
-    .then((result)=>{
-        console.log(result);
-    })
-.then(()=>{
-    weatherApp.refreshCart()
-})
+// weatherApp.deleteProduct(1234567555)
+//     .then((result)=>{
+//         console.log(result);
+//     })
+// .then(()=>{
+//     weatherApp.refreshCart()
+// })

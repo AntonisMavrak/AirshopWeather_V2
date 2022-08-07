@@ -17,4 +17,7 @@ $load= new Controls\Functions\init();
 //    throw new \ErrorException("command not found");
 //}
 
-var_dump($load->load()) ;
+
+if($load->load()){
+    echo $load->run();
+}

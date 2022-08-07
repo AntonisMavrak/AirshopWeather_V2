@@ -39,14 +39,14 @@ class weatherData
         if ($this->chekData($input, $collection)===false)
         {
             try {
-
+                 $date= new UTCDateTime();
                 $insertData = $collection->insertOne([              //ama kani kapoios request bori na gemisi thn bash
-                    'expireAT' => 'new MongoDB\BSD',
+                    'expireAt' =>   $date,
                     'location' => $input['location'],               //prepi na doume an kapoios vali dika tou data sto request kai oxi apo to openWeather opote isos prepi na valoume kapoio flag metaji mas
                     'temperature' => $input['temperature']
                 ]);
                 return true;
-            } catch (\MongoCursorException $e) {
+            } catch (\Exception $e) {
                 echo "error message: " . $e->getMessage() . "\n";
                 echo "error code: " . $e->getCode() . "\n";
             }
