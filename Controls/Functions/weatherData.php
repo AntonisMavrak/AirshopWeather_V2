@@ -41,7 +41,7 @@ class weatherData
             try {
 
                 $insertData = $collection->insertOne([              //ama kani kapoios request bori na gemisi thn bash
-                    'expireAT' => date('j-m-y h-i-s'),
+                    'expireAT' => 'new MongoDB\BSD',
                     'location' => $input['location'],               //prepi na doume an kapoios vali dika tou data sto request kai oxi apo to openWeather opote isos prepi na valoume kapoio flag metaji mas
                     'temperature' => $input['temperature']
                 ]);

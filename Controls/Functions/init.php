@@ -4,8 +4,10 @@ namespace Controls\Functions;
 
 use Controls\Router\routing;
 
+
 class init
 {
+    use sanitizer;
     public function load(){
         $router= new routing();
         $input=file_get_contents('php://input');
@@ -15,6 +17,7 @@ class init
 //prepi na gini sanitaze to uri kai ta data;
     public function runCommand($input,$method){
         $input=json_decode($input,true);
+        $input =$this->sanitazeData($input);
         switch ($input['flag']){
             case 'register':$register= new User();
                 $register->register($input);

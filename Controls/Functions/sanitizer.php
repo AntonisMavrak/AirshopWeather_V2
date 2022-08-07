@@ -15,6 +15,18 @@ trait sanitizer
         return preg_replace("/\.html$/", '', $lastWord);
     }
 
+    public function sanitazeUri($uri): string
+    {
+        //        TODO replace special chars
+        return preg_replace("/[^a-zα-ωά-ώ\d\/\-\._]+/u", '', $uri);
+    }
+    public function sanitazeData($input)
+    {
+        //        TODO replace special chars
+        foreach ($input as $x=>$value) {
+            $input[$x]=preg_replace("/[^a-zα-ωά-ώ\d\/\-\._]+/u", '', $value);
 
-
+        }
+        return $input;
+    }
 }
