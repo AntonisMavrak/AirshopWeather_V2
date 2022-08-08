@@ -10,8 +10,8 @@ class User
 
     public function register($input)
     {
-        $name=$input['name'];
-        $password=$input['password'];
+        $name = $input['name'];
+        $password = $input['password'];
         if ($this->isRegisteredUser($name) !== null) {
             echo '<script>alert("User already exists")</script>';
         } else {
@@ -28,16 +28,16 @@ class User
 
     public function login($input)
     {
-        $name=$input['name'];
-        $password=$input['password'];
+        $name = $input['name'];
+        $password = $input['password'];
         $existingUser = $this->isRegisteredUser($name);
         if ($existingUser !== null) {
-            if ($password === $existingUser["password"]){
+            if ($password === $existingUser["password"]) {
 //                $_SESSION["name"] = $name;
 //                $_SESSION["id"] = $existingUser["id"];
                 echo '<script>alert("Successfully logged in!!")</script>';
             }
-        }else{
+        } else {
             echo '<script>alert("User does not exist")</script>';
         }
 
@@ -61,56 +61,47 @@ class User
 
     public function saveSearch($input)
     {
-        // TODO connect to DB
-        $collection = $this->mongo('users');
+        // mallon meta to login
 
-        // TODO find user
-        $match = [
-            'name' => 'Stella Boukla'
-        ];
+        $name = $input['name'];
+        $historyFlag = $input['flag'];
+        $historyData = $input['data'];
 
-        //TODO insert table
-        $insert = ['$push' => [
-            $input['flag'] => $input['data']
-        ]
-        ];
-        $options = [
+        if ($historyData==!null) {
 
-        ];
-        //TODO delete table
-        $delete=['$pop'=>
-            [$input['flag']=>-1]
-        ];
+            $collection = $this->mongo('users');
+            $match = [
+                'name' => $name
+            ];
+            $insert = ['$push' => [
+                $historyFlag => $historyData
+            ]
+            ];
+            $options = [
 
-        $pagesData = $collection->findOne($match, $options);
+            ];
+            $delete = ['$pop' =>
+                [$historyFlag => -1]
+            ];
 
-        if (count($pagesData[$input['flag']]) >= 10) {
-            $collection->updateOne($match, $delete);
+            $pagesData = $collection->findOne($match, $options);
+
+            if (count($pagesData[$input['flag']]) >= 10) {
+                $collection->updateOne($match, $delete);
+            }
+            $collection->updateOne($match, $insert);
+
+            $this->showSearch($pagesData, $historyFlag);
+        }else{
+            echo '<script>alert("Insert Data !!!")</script>';
         }
-        $collection->updateOne($match, $insert);
-
-        $this->showSearch($input['flag']);
     }
 
-    private function showSearch($input)
+    private function showSearch($pagesData, $historyFlag)
     {
-        // TODO connect to DB
-        $collection = $this->mongo('users');
-
-        // TODO check if page with name exists
-        $match = [
-            'name' => 'Stella Boukla'
-        ];
-        $options = [
-
-        ];
-        $pagesData = $collection->findOne($match, $options);
 
         if ($pagesData !== null) {
-//            for($i=1;$i<count($pagesData);$i++){
-//                echo '<br>'.$pagesData[$input]['search'.$i].'<br>';
-//            }
-            foreach ($pagesData[$input] as $pageData) {
+            foreach ($pagesData[$historyFlag] as $pageData) {
                 echo '<br>' . $pageData . '<br>';
             }
             return true;
