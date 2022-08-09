@@ -31,15 +31,15 @@ let weatherApp = {
     addToDatabase: async (data) => {
 
         console.log(data["name"])
-        // return await indexeddb['myWeather']
-        //     .add(data)
-        //     .then((id) => {
-        //         console.log(id);
-        //         return weatherApp.successHandler('Product with id:' + id + ' added to shopping cart');
-        //     })
-        //     .catch((e) => {
-        //         return weatherApp.errorHandler("Error: " + (e.stack || e));
-        //     })
+        return await indexeddb['myWeather']
+            .add(data)
+            .then((id) => {
+                console.log(id);
+                return weatherApp.successHandler('Product with id:' + id + ' added to shopping cart');
+            })
+            .catch((e) => {
+                return weatherApp.errorHandler("Error: " + (e.stack || e));
+            })
     },
     getStoredData: async () => {
         return await indexeddb['myWeather'].toArray()
@@ -89,12 +89,14 @@ let weatherApp = {
             storedData.then(value => {
                 for (let i = 0; i < value.length; i++) {
                     if (value[i]["name"] === jsonData["name"]) {
+                        console.log("Location already registered in indexedDB")
                         exist = true;
                         // TODO
                         //  Check if date of indexeddb data equals with the date of the db data
                     }
                 }
                 if (!exist) {
+                    console.log("New location data added")
                     weatherApp.addToDatabase(jsonData).then((result) => {
                         return weatherApp.successHandler('modified: ' + result)
                     }).catch((e) => {
