@@ -1,3 +1,5 @@
+import zoneEnterEcho from "./dexie.mjs";
+
 console.log('ready');
 import {header1} from "../Templates/templates.js";
 import indexeddb from './indexeddb.js'
@@ -12,17 +14,6 @@ let weatherApp = {
     buildHeader: (data) => {
         return header1(data);
     },
-    addToDatabase: async (data) => {
-        return await indexeddb[data['collection']]
-            .add(data['data'])
-            .then((id) => {
-                console.log(id);
-                return weatherApp.successHandler('Product with id:' + id + ' added to shopping cart');
-            })
-            .catch((e) => {
-                return weatherApp.errorHandler("Error: " + (e.stack || e));
-            })
-    },
     errorHandler(data) {
         return {
             'status': 'error',
@@ -35,13 +26,28 @@ let weatherApp = {
             'message': data
         }
     },
-    getStoredData: async () => {
-        return await indexeddb['shoppingCart'].toArray()
+
+    //          >>>>>>>>>IndexedDb functions<<<<<<<<<<
+    addToDatabase: async (data) => {
+
+        console.log(data["name"])
+        // return await indexeddb['myWeather']
+        //     .add(data)
+        //     .then((id) => {
+        //         console.log(id);
+        //         return weatherApp.successHandler('Product with id:' + id + ' added to shopping cart');
+        //     })
+        //     .catch((e) => {
+        //         return weatherApp.errorHandler("Error: " + (e.stack || e));
+        //     })
     },
-    modifyProduct: async (productRef, data) => {
-        return await indexeddb['shoppingCart']
-            .where('reference')
-            .equals(productRef)
+    getStoredData: async () => {
+        return await indexeddb['myWeather'].toArray()
+    },
+    modifyProduct: async (location, data) => {
+        return await indexeddb['myWeather']
+            .where('location')
+            .equals(location)
             .modify(data)
             .then((result) => {
                 return weatherApp.successHandler('modified: ' + result)
@@ -53,18 +59,6 @@ let weatherApp = {
                 return weatherApp.errorHandler("Generic error: " + error);
             })
     },
-    deleteProduct: async (productRef) => {
-        return await indexeddb['shoppingCart']
-            .where('reference')
-            .equals(productRef)
-            .delete()
-            .then((result) => {
-                return weatherApp.successHandler('deleted: ' + result)
-            })
-    },
-    refreshCart(){
-        console.log('Cart is Refreshed !!!!!')
-    },
 
     worker: () => {
         const myWorker = new Worker('./Assets/Development/Workers/api.js');
@@ -74,25 +68,64 @@ let weatherApp = {
         }
         myWorker.postMessage(message);
         myWorker.onmessage = (message) => {
-            weatherApp.postData("https://localhost/AirshopWeather_V2/index.html/saved_data", message.data).then(()=>{
+            weatherApp.postData("https://localhost/AirshopWeather_V2/index.html/saved_data", message.data).then(() => {
                 console.log("success")
             })
         }
         return myWorker;
     },
 
-    postData:async (url,data)=>{
+    indexedDBWorker: () => {
+        const dbWorker = new Worker('./Assets/Development/Workers/api.js');
+        let message = {
+            'function': 'start',
+            'message': 'starting api'
+        }
+        dbWorker.postMessage(message);
+        dbWorker.onmessage = (message) => {
+            let jsonData = JSON.parse(message.data);
+            let storedData = weatherApp.getStoredData();
+            let exist = false;
+            storedData.then(value => {
+                for (let i = 0; i < value.length; i++) {
+                    if (value[i]["name"] === jsonData["name"]) {
+                        exist = true;
+                        // TODO
+                        //  Check if date of indexeddb data equals with the date of the db data
+                    }
+                }
+                if (!exist) {
+                    weatherApp.addToDatabase(jsonData).then((result) => {
+                        return weatherApp.successHandler('modified: ' + result)
+                    }).catch((e) => {
+                        return weatherApp.errorHandler("Error: " + (e.stack || e));
+                    })
+                }
+            })
+                .catch((e) => {
+                    return weatherApp.errorHandler("Error: " + (e.stack || e));
+                })
+        }
+        return dbWorker;
+    },
+
+    postData: async (url, data) => {
+        console.log(JSON.parse(data));
         const response = await fetch(url, {
             method: 'POST',
-            body:  data,
-            headers:{'Content-Type':'text/html'}
+            body: data,
+            headers: {'Content-Type': 'text/html'}
         });
         return response;
     }
 }
 
-weatherApp.worker();
+
+weatherApp.indexedDBWorker();
 // weatherApp.init();
+
+
+
 
 // let myWorker=weatherApp.worker();
 // myWorker.postMessage("ok");
