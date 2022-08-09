@@ -18,7 +18,9 @@ trait sanitizer
     public function sanitazeUri($uri): string
     {
         //        TODO replace special chars
-        return preg_replace("/[^a-zα-ωά-ώ\d\/\-\._]+/u", '', $uri);
+        $words = explode('/', $uri);
+        $lastWord = array_pop($words);
+        return preg_replace("/[^a-zα-ωά-ώ\d\/\-\._]+/u", '', $lastWord);
     }
     public function sanitazeData($input)
     {

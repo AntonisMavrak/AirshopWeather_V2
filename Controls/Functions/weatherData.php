@@ -19,16 +19,16 @@ class weatherData
 
     private function chekData($input, $collection)
     {
+            $match = ["weather.name"=>$input['name']];
 
-            $match = [
-                'location' => $input['location']
-            ];
             $options = [
 
             ];
+
         try {
             $weatherData = $collection->findOne($match, $options);
             return ($weatherData === NULL) ? false : $weatherData;
+
         }catch (\Exception $e){
             var_dump($e);
         }
@@ -36,14 +36,16 @@ class weatherData
 
     private function recordData($input, $collection)
     {
+
         if ($this->chekData($input, $collection)===false)
         {
             try {
                  $date= new UTCDateTime();
                 $insertData = $collection->insertOne([              //ama kani kapoios request bori na gemisi thn bash
                     'expireAt' =>   $date,
-                    'location' => $input['location'],               //prepi na doume an kapoios vali dika tou data sto request kai oxi apo to openWeather opote isos prepi na valoume kapoio flag metaji mas
-                    'temperature' => $input['temperature']
+                    'location'=>$input['name'],
+                    'weather' => $input               //prepi na doume an kapoios vali dika tou data sto request kai oxi apo to openWeather opote isos prepi na valoume kapoio flag metaji mas
+
                 ]);
                 return true;
             } catch (\Exception $e) {

@@ -18,6 +18,7 @@ $load= new Controls\Functions\init();
 //}
 
 
-if($load->load()){
+if ($load->load()) {
     echo $load->run();
 }
+

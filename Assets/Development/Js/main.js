@@ -66,71 +66,60 @@ let weatherApp = {
         console.log('Cart is Refreshed !!!!!')
     },
 
-    worker:async ()=>{
-        const myWorker =new Worker('./Assets/Development/Workers/api.js');
-        let dataJson;
+    worker: () => {
+        const myWorker = new Worker('./Assets/Development/Workers/api.js');
         let message = {
             'function': 'start',
             'message': 'starting api'
         }
         myWorker.postMessage(message);
         myWorker.onmessage = (message) => {
-            dataJson=message.data;
-             return dataJson=JSON.parse(dataJson);
-
-
-
+            weatherApp.postData("https://localhost/AirshopWeather_V2/index.html/saved_data", message.data).then(()=>{
+                console.log("success")
+            })
         }
+        return myWorker;
+    },
 
+    postData:async (url,data)=>{
+        const response = await fetch(url, {
+            method: 'POST',
+            body:  data,
+            headers:{'Content-Type':'text/html'}
+        });
+        return response;
     }
 }
 
-console.log(a);
 weatherApp.worker();
+// weatherApp.init();
 
-
-weatherApp.init();
-
-// TODO add data to database
-// const product = {
-//   'collection':'shoppingCart',
-//   'data':{
-//     'reference':1234567555,
-//     'price':156.3,
-//     'type':'SolarPanel',
-//     'name':'GoalZero 80W Nomad',
-//     'quantity':'5'
-//   }
+// let myWorker=weatherApp.worker();
+// myWorker.postMessage("ok");
+// myWorker.onmessage=(ev)=>{
+//     console.log(ev.data);
 // }
-//
-// weatherApp.addToDatabase(product)
-//     .then((result)=>{
-//       console.log(result);
-//     });
 
-// TODO return stored data
-// weatherApp.getStoredData().then((result)=>{
-//     console.log(result);
-// })
 
-// TODO update stored data
-// const data = {
-//     'reference':1234567555,
-//     'price':88.88,
-//     'type':'SolarPanel',
-//     'name':'GoalZero 80W Nomad',
-//     'quantity':'123'
-//   }
-// weatherApp.modifyProduct(1234567555,data)
-//     .then((result)=>{
-//         console.log(result);
-//     })
+// let postData=(dataJson)=>{
+//     let url="https://localhost/AirshopWeather_V2/index";
+//     let flag=dataJson;
+//     console.log(flag);
+//     let httpRequest = new XMLHttpRequest();
+//     // httpRequest.onreadystatechange = alertContents;
+//     httpRequest.open('POST', url);
+//     httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+//     httpRequest.send('flag=' + encodeURIComponent(flag));
+// }
+// function alertContents() {
+//     let httpRequest;
+//     if (httpRequest.readyState === XMLHttpRequest.DONE) {
+//         if (httpRequest.status === 200) {
+//             let response = JSON.parse(httpRequest.responseText);
+//             alert(response.computedString);
+//         } else {
+//             alert('There was a problem with the request.');
+//         }
+//     }
+// }
 
-// TODO delete stored data
-// weatherApp.deleteProduct(1234567555)
-//     .then((result)=>{
-//         console.log(result);
-//     })
-// .then(()=>{
-//     weatherApp.refreshCart()
-// })

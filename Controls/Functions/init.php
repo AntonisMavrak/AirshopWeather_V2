@@ -12,15 +12,16 @@ class init
         $router= new routing();
         $input=file_get_contents('php://input');
         $request=  $_SERVER['REQUEST_URI'] === ($_SERVER['APP_BASE'] ?? '') ? '/index.html' : $_SERVER['REQUEST_URI'];
-        return !empty($input) ? $this->runCommand($input,$_SERVER['REQUEST_METHOD']) : $router->routing($request);
+        return !empty($input) ? $this->runCommand($input,$_SERVER['REQUEST_METHOD'],$_SERVER['REQUEST_URI']) : $router->routing($request);
     }
-//prepi na gini sanitaze to uri kai ta data;
-    public function runCommand($input,$method){
+    public function runCommand($input,$method,$uri){
+        echo "sdf";
+        $uri=$this->sanitazeUri($uri);
         $input=json_decode($input,true);
-        $input =$this->sanitazeData($input);
+//        $input =$this->sanitazeData($input);
         $user= new User();
 
-        switch ($input['flag']){
+        switch ($uri){
             case 'register': $user->register($input);
                 break;
             case'login': $user->login($input);
@@ -28,7 +29,7 @@ class init
             case'history': $user->saveSearch($input);
                 break;
             case 'saved_data':$data= new weatherData();
-                return$data->handleData($input,$method);
+                $data->handleData($input,$method);
                 break;
             default: return false;
 
