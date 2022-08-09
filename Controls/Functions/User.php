@@ -8,16 +8,15 @@ class User
 {
     use Database;
 
+    // Register new user to database
     public function register($input)
     {
-        $name = $input['name'];
-        $password = $input['password'];
-        if ($this->isRegisteredUser($name) !== null) {
+        if ($this->isRegisteredUser($input['name']) !== null) {
             echo '<script>alert("User already exists")</script>';
         } else {
             $collection = $this->mongo('users');
             try {
-                $collection->insertOne(['name' => $name, 'password' => $password]);
+                $collection->insertOne(['name' => $input['name'], 'password' => $input['password']]);
                 echo '<script>alert("Registered successfully")</script>';
             } catch (\Exception $e) {
                 echo '<script>alert("Something went wrong")</script>';
@@ -26,15 +25,17 @@ class User
 
     }
 
+    // Check if user exist.
+    // If user exists then save id and name to session
     public function login($input)
     {
-        $name = $input['name'];
-        $password = $input['password'];
-        $existingUser = $this->isRegisteredUser($name);
+        $existingUser = $this->isRegisteredUser($input['name']);
         if ($existingUser !== null) {
-            if ($password === $existingUser["password"]) {
-//                $_SESSION["name"] = $name;
-//                $_SESSION["id"] = $existingUser["id"];
+            if ($input['password'] === $existingUser["password"]) {
+                session_start();
+                $_SESSION["name"] = $input['name'];
+                $_SESSION["id"] = $existingUser["_id"];
+
                 echo '<script>alert("Successfully logged in!!")</script>';
             }
         } else {
@@ -43,6 +44,7 @@ class User
 
     }
 
+    // Checks database if user is registered in database
     public function isRegisteredUser($name)
     {
         $collection = $this->mongo('users');
@@ -52,16 +54,13 @@ class User
         $options = [
 
         ];
-        $exist = $collection->findOne($match, $options);
-
-        return $exist;
+        return $collection->findOne($match, $options);
 
     }
 
-
+    // Save the last 10 searches that the user chose
     public function saveSearch($input)
     {
-        // mallon meta to login
 
         $name = $input['name'];
         $historyFlag = $input['flag'];
@@ -97,6 +96,7 @@ class User
         }
     }
 
+    // Returns the searches that have been saved in the db
     private function showSearch($pagesData, $historyFlag)
     {
 

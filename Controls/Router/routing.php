@@ -9,21 +9,26 @@ class routing
 {
     use sanitizer;
     use Database;
-    public function routing($page)
+
+
+    public function routing($page):bool
     {
-        //        TODO LowerCase transformation
+        //
         $page = mb_strtolower($page);
+
+        // Checks if page ends in '.html'
         if ((strlen($page) - strlen('.html')) === strrpos($page, '.html')) {
-            $namePage = $this->sanitazePage($page);
+            $namePage = $this->sanitizePage($page);
             return  $this->isRegisteredPage($namePage);
         } else {
-            echo 'den teliwnei se .html';
+            echo 'Does not end in .html';
             return  false;
         }
 
     }
 
-    private function isRegisteredPage($pageName)
+    // Checks if page is registered in
+    private function isRegisteredPage($pageName): bool
     {
         $collection = $this->mongo('pages');
         $match = [
@@ -35,7 +40,7 @@ class routing
 
         $pagesData = $collection->findOne($match, $options);
 
-        if ($pagesData!==null) { // ?
+        if ($pagesData!==null) {
             return true;
         }
         return false;

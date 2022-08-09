@@ -7,6 +7,7 @@ use MongoDB\Collection;
 
 trait Database
 {
+    // The connection to mongo using include file
     public function mongo($mongoCollection): Collection
     {
         $mongoConnection = new Mongo('mongodb://' .
