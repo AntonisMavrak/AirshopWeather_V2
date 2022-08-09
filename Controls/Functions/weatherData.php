@@ -9,39 +9,39 @@ class weatherData
 {
     use Database;
 
+    // If method is 'GET' then checks if data exist else call 'recordData()'
     function handleData($input, $method)
-    {   //an inai allh method?
-        // TODO CHEK METHOD
-        // TODO CONNECT DB
+    {
         $collection = $this->mongo('weatherdata');
-        return ($method === "GET") ? $this->chekData($input, $collection) : $this->recordData($input, $collection);
+        return ($method === "GET") ? $this->checkData($input, $collection) : $this->recordData($input, $collection);
     }
 
-    private function chekData($input, $collection)
+    // Checks if data already exist in the db
+    private function checkData($input, $collection)
     {
 
-            $match = [
-                'location' => $input['location']
-            ];
-            $options = [
+        $match = [
+            'location' => $input['location']
+        ];
+        $options = [
 
-            ];
+        ];
         try {
             $weatherData = $collection->findOne($match, $options);
             return ($weatherData === NULL) ? false : $weatherData;
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             var_dump($e);
         }
     }
 
+    // If data does not exist in db save it in db
     private function recordData($input, $collection)
     {
-        if ($this->chekData($input, $collection)===false)
-        {
+        if ($this->checkData($input, $collection) === false) {
             try {
-                 $date= new UTCDateTime();
+                $date = new UTCDateTime();
                 $insertData = $collection->insertOne([              //ama kani kapoios request bori na gemisi thn bash
-                    'expireAt' =>   $date,
+                    'expireAt' => $date,
                     'location' => $input['location'],               //prepi na doume an kapoios vali dika tou data sto request kai oxi apo to openWeather opote isos prepi na valoume kapoio flag metaji mas
                     'temperature' => $input['temperature']
                 ]);
@@ -50,8 +50,8 @@ class weatherData
                 echo "error message: " . $e->getMessage() . "\n";
                 echo "error code: " . $e->getCode() . "\n";
             }
-        }else{
-            return "exi gini egrafh";
+        } else {
+            return "Already registered";
         }
     }
 
