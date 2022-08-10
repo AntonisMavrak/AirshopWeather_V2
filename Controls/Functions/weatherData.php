@@ -19,8 +19,8 @@ class weatherData
 
     private function chekData($input, $collection)
     {
-            $match = ["location"=>(isset($input['name'])?$input['name']:"Athens"),
-                      "data"=> (isset($input['name'])?'weather':"airpollution") ];
+            $match = ["location"=>$input['location'],
+                      "type"=> $input['type']];
 
             $options = [
 
@@ -41,12 +41,13 @@ class weatherData
         if ($this->chekData($input, $collection)===false)
         {
             try {
+                $input['data']=json_decode($input['data'],true);
                  $date= new UTCDateTime();
                 $insertData = $collection->insertOne([              //ama kani kapoios request bori na gemisi thn bash
                     'expireAt' =>   $date,
-                    'location'=>(isset($input['name'])?$input['name']:"Athens"),
-                    isset($input['name'])?'weather':"airpollution" => $input ,
-                    'data'=> isset($input['name'])?'weather':"airpollution"
+                    'location'=>$input['location'],
+                    'type' => $input['type'] ,           //na tsekaroume an exei data to array pou erxetai
+                    'data'=> $input['data']
 
                 ]);
                 return true;

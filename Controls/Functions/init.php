@@ -15,10 +15,11 @@ class init
         return !empty($input) ? $this->runCommand($input,$_SERVER['REQUEST_METHOD'],$_SERVER['REQUEST_URI']) : $router->routing($request);
     }
     public function runCommand($input,$method,$uri){
-        echo "sdf";
         $uri=$this->sanitazeUri($uri);
         $input=json_decode($input,true);
+
 //        $input =$this->sanitazeData($input);
+
         $user= new User();
 
         switch ($uri){

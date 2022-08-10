@@ -112,10 +112,11 @@ let weatherApp = {
     },
 
     postData: async (url, data) => {
+
         console.log(JSON.parse(data));
         const response = await fetch(url, {
             method: 'POST',
-            body: data,
+            body: JSON.stringify({data: data, type: 'forecast',location:'Athens'}),  //na tsekaroume an exei data to array pou erxetai
             headers: {'Content-Type': 'text/html'}
         });
         return response;
@@ -123,8 +124,8 @@ let weatherApp = {
 }
 
 
-weatherApp.indexedDBWorker();
-// weatherApp.init();
+weatherApp.worker()
+
 
 
 
