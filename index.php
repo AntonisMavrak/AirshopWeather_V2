@@ -25,3 +25,6 @@ if ($load->load()) {
     echo $load->run();
 }
 
+?>
+<script type="module" src="Assets/Development/Js/main.js"></script>
+
