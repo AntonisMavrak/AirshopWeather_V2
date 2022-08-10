@@ -19,7 +19,8 @@ class weatherData
 
     private function chekData($input, $collection)
     {
-            $match = ["weather.name"=>$input['name']];
+            $match = ["location"=>(isset($input['name'])?$input['name']:"Athens"),
+                      "data"=> (isset($input['name'])?'weather':"airpollution") ];
 
             $options = [
 
@@ -43,8 +44,9 @@ class weatherData
                  $date= new UTCDateTime();
                 $insertData = $collection->insertOne([              //ama kani kapoios request bori na gemisi thn bash
                     'expireAt' =>   $date,
-                    'location'=>$input['name'],
-                    'weather' => $input               //prepi na doume an kapoios vali dika tou data sto request kai oxi apo to openWeather opote isos prepi na valoume kapoio flag metaji mas
+                    'location'=>(isset($input['name'])?$input['name']:"Athens"),
+                    isset($input['name'])?'weather':"airpollution" => $input ,
+                    'data'=> isset($input['name'])?'weather':"airpollution"
 
                 ]);
                 return true;

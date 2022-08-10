@@ -18,7 +18,7 @@ class routing
 
         // Checks if page ends in '.html'
         if ((strlen($page) - strlen('.html')) === strrpos($page, '.html')) {
-            $namePage = $this->sanitizePage($page);
+            $namePage = $this->sanitazePage($page);
             return  $this->isRegisteredPage($namePage);
         } else {
             echo 'Does not end in .html';
