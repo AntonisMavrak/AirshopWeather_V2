@@ -63,8 +63,8 @@ let weatherApp = {
     worker: () => {
         const myWorker = new Worker('./Assets/Development/Workers/api.js');
         let message = {
-            'function': 'start',
-            'message': 'starting api'
+            'Location': 'Athens',
+            'Type': 'airPollution'
         }
         myWorker.postMessage(message);
         myWorker.onmessage = (message) => {
@@ -112,11 +112,9 @@ let weatherApp = {
     },
 
     postData: async (url, data) => {
-
-        console.log(JSON.parse(data));
         const response = await fetch(url, {
-            method: 'POST',
-            body: JSON.stringify({data: data, type: 'forecast',location:'Athens'}),  //na tsekaroume an exei data to array pou erxetai
+            method: 'PUT',
+            body: JSON.stringify({data: data, type: 'airPollution',location:"Athens"}),  //na tsekaroume an exei data to array pou erxetai
             headers: {'Content-Type': 'text/html'}
         });
         return response;

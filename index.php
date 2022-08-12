@@ -21,9 +21,9 @@ $load = new Controls\Functions\init();
 //}
 
 
-//if ($load->load()) {
-//    echo $load->run();
-//}
+if ($load->load()) {
+    echo $load->run();
+}
 
-echo ($load->load());
+//echo ($load->load());
 

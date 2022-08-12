@@ -1,23 +1,25 @@
 onmessage = (event) => {
-    console.log('Worker Received Message');
 
-
-
-    switch ('forecast') {
+    switch (event.data['Type']) {
         case 'weather':
-            getWeather().then((response) => {
+            getWeather(event.data['Location']).then((response) => {
                 postMessage(JSON.stringify(response));
             });
             break;
         case 'airPollution':
-            airPollution().then((response) => {
-                postMessage(JSON.stringify(response));
+            findLocation(event.data['Location']).then((response) => {
+                airPollution(response[0].lat,response[0].lon).then((response) => {
+                    postMessage(JSON.stringify(response));
+                })
             });
             break;
         case'forecast':
-            weatherForecast().then((response) => {
-                postMessage(JSON.stringify(response));
-            })
+            findLocation(event.data['Location']).then((response) => {
+                    weatherForecast(response[0].lat,response[0].lon).then((response) => {
+                    postMessage(JSON.stringify(response));
+                 })
+            });
+
             break;
         default:
             postMessage('ola lathos');
@@ -27,8 +29,7 @@ onmessage = (event) => {
 }
 
 
-    let getWeather = async () => {
-        let city_select = 'Athens';
+    let getWeather = async (city_select) => {
         let key = '80d2ff5f959352f4319d73dc1f0171ce';
         return fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city_select},eng&lang=eng&units=metric&appid=${key}`,
             {method: 'GET'}
@@ -43,9 +44,7 @@ onmessage = (event) => {
 
     }
 
-    let airPollution = async () => {
-        let lat = 37.983810;
-        let lon = 37.983810;
+    let airPollution = async (lat,lon) => {
         let key = '80d2ff5f959352f4319d73dc1f0171ce';
         return fetch(`https://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${lat}&lon=${lon}&appid=${key}`,
             {method: 'GET'}
@@ -60,9 +59,8 @@ onmessage = (event) => {
 
     }
 
-    let weatherForecast = async () => {
-        let lat = 37.983810;
-        let lon = 37.983810;
+    let weatherForecast = async (lat,lon) => {
+
         let key = '80d2ff5f959352f4319d73dc1f0171ce';
         return fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${key}`,
             {method: 'GET'}
@@ -89,8 +87,8 @@ onmessage = (event) => {
                 return error;
             });
     }
-    findLocation('Thessaloniki').then((response) => {
-        postMessage(JSON.stringify(response));
-    });
+    // findLocation('Thessaloniki').then((response) => {
+    //     postMessage(JSON.stringify(response));
+    // });
 
 
