@@ -118,11 +118,27 @@ let weatherApp = {
             headers: {'Content-Type': 'text/html'}
         });
         return response;
+    },
+    getData:async ()=>{
+        let data={type:'airPollution',location:'Athens'}
+        const response = await fetch("https://localhost/AirshopWeather_V2/index.html/saved_data", {
+            method: 'POST',
+            body: JSON.stringify( data),
+            headers: {'Content-Type': 'application/json'}
+        }).then(response=>{
+           return response.json();
+        }).then((data) =>{
+            console.log(data);
+            return data;
+        })
+
     }
 }
 
 
-weatherApp.worker()
+// weatherApp.worker();
+weatherApp.getData();
+
 
 
 
