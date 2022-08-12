@@ -12,7 +12,12 @@ class init
         $router= new routing();
         $input=file_get_contents('php://input');
         $request=  $_SERVER['REQUEST_URI'] === ($_SERVER['APP_BASE'] ?? '') ? '/index.html' : $_SERVER['REQUEST_URI'];
-        return !empty($input) ? $this->runCommand($input,$_SERVER['REQUEST_METHOD'],$_SERVER['REQUEST_URI']) : $router->routing($request);
+
+        if(!empty($input)){
+           return $this->runCommand($input, $_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI'],);
+        }else if ($router->routing($request)){
+           return $this->run();
+        }
     }
     public function runCommand($input,$method,$uri){
         $uri=$this->sanitazeUri($uri);

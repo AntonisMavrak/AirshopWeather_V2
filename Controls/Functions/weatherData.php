@@ -14,7 +14,7 @@ class weatherData
         // TODO CHEK METHOD
         // TODO CONNECT DB
         $collection = $this->mongo('weatherdata');
-        return ($method === "GET") ? $this->chekData($input, $collection) : $this->recordData($input, $collection);
+        return ($method === "POST") ? $this->chekData($input, $collection) : $this->recordData($input, $collection);
     }
 
     private function chekData($input, $collection)
