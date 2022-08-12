@@ -130,32 +130,5 @@ weatherApp.worker()
 
 
 
-// let myWorker=weatherApp.worker();
-// myWorker.postMessage("ok");
-// myWorker.onmessage=(ev)=>{
-//     console.log(ev.data);
-// }
 
-
-// let postData=(dataJson)=>{
-//     let url="https://localhost/AirshopWeather_V2/index";
-//     let flag=dataJson;
-//     console.log(flag);
-//     let httpRequest = new XMLHttpRequest();
-//     // httpRequest.onreadystatechange = alertContents;
-//     httpRequest.open('POST', url);
-//     httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-//     httpRequest.send('flag=' + encodeURIComponent(flag));
-// }
-// function alertContents() {
-//     let httpRequest;
-//     if (httpRequest.readyState === XMLHttpRequest.DONE) {
-//         if (httpRequest.status === 200) {
-//             let response = JSON.parse(httpRequest.responseText);
-//             alert(response.computedString);
-//         } else {
-//             alert('There was a problem with the request.');
-//         }
-//     }
-// }
 

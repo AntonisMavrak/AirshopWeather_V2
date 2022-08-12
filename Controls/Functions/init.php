@@ -30,7 +30,7 @@ class init
             case'history': $user->saveSearch($input);
                 break;
             case 'saved_data':$data= new weatherData();
-                $data->handleData($input,$method);
+             return json_encode($data->handleData($input,$method),true);
                 break;
             default: return false;
 
