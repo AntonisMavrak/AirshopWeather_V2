@@ -1,6 +1,6 @@
 import zoneEnterEcho from "./dexie.mjs";
 
-console.log('ready');
+console.log('main.js ready');
 import {header1} from "../Templates/templates.js";
 import indexeddb from './indexeddb.js'
 
@@ -14,6 +14,9 @@ let weatherApp = {
     buildHeader: (data) => {
         return header1(data);
     },
+
+
+//          >>>>>>>>>Error/Success Handlers<<<<<<<<<<
     errorHandler(data) {
         return {
             'status': 'error',
@@ -27,11 +30,12 @@ let weatherApp = {
         }
     },
 
-    //          >>>>>>>>>IndexedDb functions<<<<<<<<<<
-    addToDatabase: async (data) => {
 
-        console.log(data["name"])
-        return await indexeddb['myWeather']
+//          >>>>>>>>>IndexedDb functions<<<<<<<<<<
+    addToDatabase: async (data, indexedName) => {
+
+        console.log(data["location"])
+        return await indexeddb[indexedName]
             .add(data)
             .then((id) => {
                 console.log(id);
@@ -41,11 +45,16 @@ let weatherApp = {
                 return weatherApp.errorHandler("Error: " + (e.stack || e));
             })
     },
-    getStoredData: async () => {
-        return await indexeddb['myWeather'].toArray()
+
+    getStoredData: async (indexedName) => {
+        if (indexeddb[indexedName] === undefined){
+            return [];
+        }
+        return await indexeddb[indexedName].toArray()
     },
-    modifyProduct: async (location, data) => {
-        return await indexeddb['myWeather']
+
+    modifyDocument: async (location, data, indexedName) => {
+        return await indexeddb[indexedName]
             .where('location')
             .equals(location)
             .modify(data)
@@ -60,10 +69,12 @@ let weatherApp = {
             })
     },
 
+
+//          >>>>>>>>>Workers<<<<<<<<<<
     worker: () => {
         const myWorker = new Worker('./Assets/Development/Workers/api.js');
         let message = {
-            'Location': 'Athens',
+            'Location': 'Thessaloniki',
             'Type': 'airPollution'
         }
         myWorker.postMessage(message);
@@ -76,73 +87,93 @@ let weatherApp = {
     },
 
     indexedDBWorker: () => {
-        const dbWorker = new Worker('./Assets/Development/Workers/api.js');
-        let message = {
-            'function': 'start',
-            'message': 'starting api'
-        }
-        dbWorker.postMessage(message);
-        dbWorker.onmessage = (message) => {
-            let jsonData = JSON.parse(message.data);
-            let storedData = weatherApp.getStoredData();
-            let exist = false;
-            storedData.then(value => {
-                for (let i = 0; i < value.length; i++) {
-                    if (value[i]["name"] === jsonData["name"]) {
-                        console.log("Location already registered in indexedDB")
-                        exist = true;
-                        // TODO
-                        //  Check if date of indexeddb data equals with the date of the db data
-                    }
-                }
-                if (!exist) {
-                    console.log("New location data added")
-                    weatherApp.addToDatabase(jsonData).then((result) => {
-                        return weatherApp.successHandler('modified: ' + result)
-                    }).catch((e) => {
-                        return weatherApp.errorHandler("Error: " + (e.stack || e));
-                    })
-                }
-            })
-                .catch((e) => {
-                    return weatherApp.errorHandler("Error: " + (e.stack || e));
-                })
-        }
-        return dbWorker;
+        //const dbWorker = new Worker('./Assets/Development/Workers/indexeddbWorker.js');
+
     },
 
+
+//          >>>>>>>>>Data Handlers<<<<<<<<<<
     postData: async (url, data) => {
         const response = await fetch(url, {
             method: 'PUT',
-            body: JSON.stringify({data: data, type: 'airPollution',location:"Athens"}),  //na tsekaroume an exei data to array pou erxetai
+            body: JSON.stringify({data: data, type: 'airPollution', location: "Thessaloniki"}),  //na tsekaroume an exei data to array pou erxetai
             headers: {'Content-Type': 'text/html'}
         });
         return response;
     },
-    getData:async ()=>{
-        let data={type:'airPollution',location:'Athens'}
-        const response = await fetch("https://localhost/AirshopWeather_V2/index.html/saved_data", {
-            method: 'POST',
-            body: JSON.stringify( data),
-            headers: {'Content-Type': 'application/json'}
-        }).then(response=>{
-           return response.json();
-        }).then((data) =>{
-            console.log(data);
-            return data;
-        })
 
+    getData: async (data) => {
+
+        await fetch("https://localhost/AirshopWeather_V2/index.html/saved_data", {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {'Content-Type': 'application/json'}
+        }).then(response => {
+            return response.json();
+        }).then((responseData) => {
+            const indexedName = weatherApp.indexedChooser(responseData['type']);
+            const storedData = weatherApp.getStoredData(indexedName);
+            let exist = false;
+
+            storedData.then(response => {
+
+                if (response.length !== 0) {
+                    for (let i = 0; i < response.length; i++) {
+                        if (response[i]["location"] === responseData["location"]) {
+                            console.log("Location already registered in indexedDB");
+                            exist = true;
+
+                            // Update indexedDB
+                            // if IndexedDb date !== MongoDb date
+                            if (response[0]['expireAt'].$date.$numberLong !== responseData['expireAt'].$date.$numberLong){
+                                try {
+                                    weatherApp.modifyDocument(responseData['location'], responseData, indexedName)
+                                    console.log("Document updated")
+                                }catch (e){
+                                    weatherApp.errorHandler("Update Error: " + (e.stack || e));
+                                }
+
+                            }
+                        }
+                    }
+                }
+
+                // Insert new document in IndexDB
+                if (!exist || response.length === 0) {
+                    console.log("New location data added")
+                    weatherApp.addToDatabase(responseData, indexedName).then((result) => {
+                        return weatherApp.successHandler('Modified: ' + result)
+                    }).catch((e) => {
+                        return weatherApp.errorHandler("Error: " + (e.stack || e));
+                    })
+                }
+
+            })
+        })
+            .catch((e) => {
+                return weatherApp.errorHandler("getData Error: " + (e.stack || e));
+            })
+
+    },
+
+    indexedChooser: (type) => {
+        switch (type) {
+            case "airPollution":
+                return "myAirPollution"
+                break;
+            case "weather":
+                return "myWeather";
+                break;
+            case "forecast":
+                return "myForecast"
+                break;
+            default:
+                return 0;
+        }
     }
 }
 
 
 // weatherApp.worker();
-weatherApp.getData();
-
-
-
-
-
-
-
-
+let data = {type: 'airPollution', location: 'Thessaloniki'}
+weatherApp.getData(data);

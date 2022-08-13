@@ -8,7 +8,7 @@ trait sanitizer
     {
         //        TODO get the last word *.html
         //        TODO replace special chars
-        //        TODO get the last word with out .html
+        //        TODO get the last word without .html
         $words = explode('/', $uri);
         $lastWord = array_pop($words);
         $lastWord = preg_replace("/[^a-zα-ωά-ώ\d\/\-\._]+/u", '', $lastWord);

@@ -58,7 +58,8 @@ class init
             '{{css}}'=>'',
             '{{page}}'=>'index',
             '{{data}}'=>json_encode($data,JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT),
-            '{{js}}'=>'<script type="module" src="Assets/development/js/dexie.mjs"></script><script type="module" src="Assets/development/js/main.js"></script>'
+            '{{js}}'=>'<script type="module" src="Assets/development/js/dexie.mjs"></script>
+                       <script type="module" src="Assets/development/js/main.js"></script>'
         ];
         $bluePrint=file_get_contents('Views/Html/htmlBlueprint.tpl');
         $html=strtr($bluePrint,$dummyArray);
