@@ -229,8 +229,10 @@ let weatherApp = {
 // weatherApp.worker(message);
 // weatherApp.getData(data);
 
+weatherApp.init();
 let data = {type: 'weather', location: 'Athens'}
 weatherApp.getData(data,false);
+
 
 // let data = {type: 'forecast', location: 'Thessaloniki'}
 // weatherApp.dataHandler(data);
