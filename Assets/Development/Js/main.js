@@ -41,6 +41,7 @@ let weatherApp = {
     },
 
 
+
 //          >>>>>>>>>IndexedDb functions<<<<<<<<<<
     addToDatabase: async (data, indexedName) => {
 
@@ -56,11 +57,15 @@ let weatherApp = {
             })
     },
 
-    getStoredData: async (indexedName) => {
+    // Returns the data as an array that is equals to the location and type
+    getStoredData: async (indexedName, locationName) => {
         if (indexeddb[indexedName] === undefined) {
             return [];
         }
-        return await indexeddb[indexedName].toArray()
+        return await indexeddb[indexedName]
+            .where('location')
+            .equals(locationName)
+            .toArray()
     },
 
     modifyDocument: async (location, data, indexedName) => {
@@ -79,17 +84,50 @@ let weatherApp = {
             })
     },
 
+    updateIndexedDB: (data, exist) => {
+        const indexedName = weatherApp.indexedChooser(data['type']);
+
+        // If not exist in IndexedDB
+        if (!exist) {
+            //Insert in indexDB
+            console.log("New location data added")
+            weatherApp.addToDatabase(data, indexedName).then((result) => {
+                // Here print data to front end
+                return weatherApp.successHandler('Added: ' + result)
+            }).catch((e) => {
+                return weatherApp.errorHandler("Error: " + (e.stack || e));
+            })
+        } else {
+
+            console.log("Document updated")
+            weatherApp.modifyDocument(data['location'], data, indexedName).then((result) => {
+                // Here print data to front end
+                return weatherApp.successHandler('Updated: ' + result)
+            }).catch((e) => {
+                return weatherApp.errorHandler("Update Error: " + (e.stack || e));
+            })
+
+        }
+        console.log(data);
+    },
+
+
 
 //          >>>>>>>>>Workers<<<<<<<<<<
-    worker: (message) => {
+    worker: (message, exist) => {
         const myWorker = new Worker('./Assets/Development/Workers/api.js');
 
         myWorker.postMessage(message);
         myWorker.onmessage = (message) => {
             weatherApp.postData("https://localhost/AirshopWeather_V2/index.html/saved_data", message.data).then(() => {
-                console.log("success")
+                console.log("Successfully updated Mongo")
+
+                // Call function
+                weatherApp.updateIndexedDB(message.data, exist);
             })
+
         }
+
         return myWorker;
     },
 
@@ -118,32 +156,13 @@ let weatherApp = {
             headers: {'Content-Type': 'application/json'}
         }).then(response => {
             return response.json();
-        }).then((responseData) => {
+        }).then((mongoResponse) => {
 
-            if (!responseData){
-               weatherApp.worker(data);
-            }
-
-            const indexedName = weatherApp.indexedChooser(responseData['type']);
-
-            if (!exist) {
-                //Not exist in index
-                //Insert in index
-                console.log("New location data added")
-                weatherApp.addToDatabase(responseData, indexedName).then((result) => {
-                    return weatherApp.successHandler('Added: ' + result)
-                }).catch((e) => {
-                    return weatherApp.errorHandler("Error: " + (e.stack || e));
-                })
+            if (mongoResponse === false) {
+                weatherApp.worker(data, exist);
             } else {
-                try {
-                    weatherApp.modifyDocument(responseData['location'], responseData, indexedName)
-                    console.log("Document updated")
-                    return weatherApp.successHandler('Updated: ' + result)
-                } catch (e) {
-                    return weatherApp.errorHandler("Update Error: " + (e.stack || e));
-                }
-
+                // Call function
+                weatherApp.updateIndexedDB(mongoResponse, exist);
             }
         })
             .catch((e) => {
@@ -155,27 +174,27 @@ let weatherApp = {
     dataHandler: (data) => {
 
         const indexedName = weatherApp.indexedChooser(data['type']);
-        const storedData = weatherApp.getStoredData(indexedName);
-        let exist = false;
+        const storedData = weatherApp.getStoredData(indexedName, data['location']);
+        let existInIndexedDB = false;
         storedData.then(response => {
-            if (response.length !== 0) {
-                for (let i = 0; i < response.length; i++) {
-                    if (response[i]["location"] === data["location"]) {
-                        exist = true;
 
-                        // From indexedDb                               // Add 2 hours in ms format     // Current Date in ms
-                        if ((Number(response[i]['expireAt'].$date.$numberLong) + (2 * weatherApp.getInterval("h", true))) <= Date.now()) {
-                            // Call Mongo
-                            console.log("Getting data from Mongo")
-                            weatherApp.getData(data,exist);
-                        } else {
-                            // Print from indexedDb
-                            console.log("Data is already in IndexedDB")
-                        }
-                    }
+            if (response.length !== 0) {
+                existInIndexedDB = true;
+
+                // From indexedDb                               // Add 2 hours in ms format     // Current Date in ms
+                if ((Number(response[0]['expireAt'].$date.$numberLong) + (2 * weatherApp.getInterval("h", true))) <= Date.now()) {
+                    // Call Mongo
+                    console.log("Getting data from Mongo to update")
+                    weatherApp.getData(data, existInIndexedDB);
+                } else {
+                    // Print from indexedDb
+                    console.log(response)
+                    console.log("Data is already in IndexedDB")
                 }
-            } else if (response.length === 0 || exist === false) {
-                weatherApp.getData(data,exist);
+
+            } else if (response.length === 0 || existInIndexedDB === false) {
+                console.log("Getting data from Mongo to add new")
+                weatherApp.getData(data, existInIndexedDB);
             }
         })
     },
@@ -222,6 +241,7 @@ let weatherApp = {
     }
 }
 
+
 // let message = {
 //     'Location': 'Thessaloniki',
 //     'Type': 'forecast'
@@ -229,10 +249,11 @@ let weatherApp = {
 // weatherApp.worker(message);
 // weatherApp.getData(data);
 
-weatherApp.init();
 let data = {type: 'weather', location: 'Athens'}
 weatherApp.getData(data,false);
 
-
 // let data = {type: 'forecast', location: 'Thessaloniki'}
-// weatherApp.dataHandler(data);
+// weatherApp.getData(data, false);
+
+let data = {type: 'forecast', location: 'Thessaloniki'}
+weatherApp.dataHandler(data);

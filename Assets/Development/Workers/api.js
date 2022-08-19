@@ -1,20 +1,20 @@
 onmessage = (event) => {
 
-    switch (event.data['Type']) {
+    switch (event.data['type']) {
         case 'weather':
-            getWeather(event.data['Location']).then((response) => {
+            getWeather(event.data['location']).then((response) => {
                 postMessage(JSON.stringify(response));
             });
             break;
         case 'airPollution':
-            findLocation(event.data['Location']).then((response) => {
+            findLocation(event.data['location']).then((response) => {
                 airPollution(response[0].lat,response[0].lon).then((response) => {
                     postMessage(JSON.stringify(response));
                 })
             });
             break;
         case'forecast':
-            findLocation(event.data['Location']).then((response) => {
+            findLocation(event.data['location']).then((response) => {
                 weatherForecast(response[0].lat,response[0].lon).then((response) => {
                     postMessage(JSON.stringify(response));
                 })
