@@ -1,0 +1,139 @@
+/*Header*/
+#header {
+    text-align: center;
+    margin-block: 60px;
+    font-size: 40px;
+    font-family: "Arial Narrow";
+}
+/*tabContainer*/
+
+.tabContainer{
+    width: 50%;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-family: "Arial Narrow";
+}
+.position{
+    display: flex;
+    justify-content: center;
+}
+
+/*Tabs*/
+#tabButtons li a {
+    text-decoration: none;
+    color: #ffffff;
+    display: block;
+}
+
+#tabButtons li a:hover {
+    text-decoration: none;
+    border-radius: 5px;
+}
+li:hover:not(.active) {
+    opacity: 0.7;
+}
+.tabContainer .tabContent .active {
+    background-color: rgba(51,101,229,0.7);
+}
+
+.tabContainer .tabContent {
+
+    height: 35%;
+    padding: 10px;
+    padding-inline: 30px;
+
+}
+
+.tabContainer .tabContent li{
+
+    list-style: none;
+    text-align: center;
+    font-size: 17px;
+    font-family: "Arial Narrow";
+    background-color: #3365e5;
+    float: left;
+    width: 48%;
+    margin-inline: 1%;
+    border-radius: 5px;
+    height: 100%;
+}
+.tabContainer .tabContent .ulButton{
+    padding: 0;
+}
+.tabContainer .tabContent .ulButton .buttons{
+    margin: 10px 0;
+    border: none;
+    cursor: pointer;
+}
+
+/*main content*/
+
+input[type=email],input[type=password],button[type=submit], input[type=text], select{
+    display: inline-block;
+    /*width: 100%;*/
+    padding: 12px 20px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+/*Submit button*/
+
+button{
+    background-color: #3365e5;
+    color: #FFFFFF;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    /*width: 100%;*/
+}
+button:hover {
+    opacity: 0.7;
+}
+
+/*logout*/
+
+/*#div{*/
+/*    float: right;*/
+/*    width: 100%;*/
+/*}*/
+#head{
+    float: left;
+    width: 100%;
+}
+#logout{
+    float: right;
+    width: 150px;
+    margin-inline: 50px;
+}
+
+/*search*/
+
+.tabSearch{
+    width: 100%;
+    height: 100px;
+    display: flex;
+    /*flex-direction: column;*/
+    justify-content: center;
+    font-family: "Arial Narrow";
+}
+
+.inline{
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+}
+#cityName, #countryName, #mySearch{
+    margin:0 8px;
+}
+
+#searchResult{
+    width: 100%;
+    height: 100%;
+}
+.sizeButton{
+    width: 100%;
+}

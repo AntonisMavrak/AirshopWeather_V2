@@ -1,7 +1,7 @@
 import zoneEnterEcho from "./dexie.mjs";
 
 console.log('main.js ready');
-import {header1} from "../Templates/templates.js";
+import {indexPage, buildPills, loginPage} from "../Templates/templates.js";
 import indexeddb from './indexeddb.js'
 
 let weatherApp = {
@@ -9,13 +9,23 @@ let weatherApp = {
         const dataElement = document.getElementById('mainData');
         const pageData = JSON.parse(dataElement.innerText);
         let pageContainer = document.getElementById('container');
-        pageContainer.insertAdjacentHTML('beforeend', weatherApp.buildHeader(pageData))
-    },
-    buildHeader: (data) => {
-        return header1(data);
-    },
 
-
+        if(document.body.id === 'index'){
+            pageContainer.insertAdjacentHTML('beforeend', weatherApp.buildApp(pageData));
+            weatherApp.buildJavaS();
+        }else{
+            pageContainer.insertAdjacentHTML('beforeend', weatherApp.buildData(pageData));
+        }
+    },
+    buildApp: (data) => {
+        return indexPage(data);
+    },
+    buildJavaS: () => {
+        return buildPills();
+    },
+    buildData: (data) => {
+        return loginPage(data);
+    },
 //          >>>>>>>>>Error/Success Handlers<<<<<<<<<<
     errorHandler(data) {
         return {
@@ -174,6 +184,6 @@ let weatherApp = {
 }
 
 
-// weatherApp.worker();
+weatherApp.init();
 let data = {type: 'airPollution', location: 'Thessaloniki'}
 weatherApp.getData(data);

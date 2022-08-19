@@ -26,7 +26,7 @@ trait sanitizer
     {
         //        TODO replace special chars
         foreach ($input as $x=>$value) {
-            $input[$x]=preg_replace("/[^a-zα-ωά-ώ\d\/\-\._]+/u", '', $value);
+            $input[$x]=preg_replace("/[^A-Za-zά-ώΑ-Ω\d\/\-\._]+/u", '', $value);
 
         }
         return $input;
