@@ -1,6 +1,7 @@
 import zoneEnterEcho from "./dexie.mjs";
 
 console.log('main.js ready');
+import {indexPage, buildPills, loginPage} from "../Templates/templates.js";
 import indexeddb from './indexeddb.js'
 
 let weatherApp = {
