@@ -1,7 +1,6 @@
 import zoneEnterEcho from "./dexie.mjs";
 
 console.log('main.js ready');
-import {header1} from "../Templates/templates.js";
 import indexeddb from './indexeddb.js'
 
 let weatherApp = {
@@ -9,12 +8,25 @@ let weatherApp = {
         const dataElement = document.getElementById('mainData');
         const pageData = JSON.parse(dataElement.innerText);
         let pageContainer = document.getElementById('container');
-        pageContainer.insertAdjacentHTML('beforeend', weatherApp.buildHeader(pageData))
-    },
-    buildHeader: (data) => {
-        return header1(data);
+
+        if(document.body.id === 'index'){
+            pageContainer.insertAdjacentHTML('beforeend', weatherApp.buildApp(pageData));
+            weatherApp.buildJavaS();
+        }else{
+            pageContainer.insertAdjacentHTML('beforeend', weatherApp.buildData(pageData));
+        }
     },
 
+//          >>>>>>>>>Page Building Functions<<<<<<<<<<
+    buildApp: (data) => {
+        return indexPage(data);
+    },
+    buildJavaS: () => {
+        return buildPills();
+    },
+    buildData: (data) => {
+        return loginPage(data);
+    },
 
 //          >>>>>>>>>Error/Success Handlers<<<<<<<<<<
     errorHandler(data) {
@@ -31,7 +43,9 @@ let weatherApp = {
     },
 
 
+
 //          >>>>>>>>>IndexedDb functions<<<<<<<<<<
+    // Adds new document to indexedDB
     addToDatabase: async (data, indexedName) => {
 
         console.log(data["location"])
@@ -46,13 +60,18 @@ let weatherApp = {
             })
     },
 
-    getStoredData: async (indexedName) => {
+    // Returns the data as an array that is equals to the location and type
+    getStoredData: async (indexedName, locationName) => {
         if (indexeddb[indexedName] === undefined) {
             return [];
         }
-        return await indexeddb[indexedName].toArray()
+        return await indexeddb[indexedName]
+            .where('location')
+            .equals(locationName)
+            .toArray()
     },
 
+    // Modifies already registered document with new data
     modifyDocument: async (location, data, indexedName) => {
         return await indexeddb[indexedName]
             .where('location')
@@ -69,17 +88,51 @@ let weatherApp = {
             })
     },
 
+    // Updated indexedDB with new document or modifies already registered one
+    updateIndexedDB: (data, exist) => {
+        const indexedName = weatherApp.indexedPicker(data['type']);
+
+        // If not exist in IndexedDB
+        if (!exist) {
+            //Insert in indexedDB
+            console.log("New location data added")
+            weatherApp.addToDatabase(data, indexedName).then((result) => {
+                // Here print data to front end
+                return weatherApp.successHandler('Added: ' + result)
+            }).catch((e) => {
+                return weatherApp.errorHandler("Error: " + (e.stack || e));
+            })
+        } else {
+            //Update in indexedDB
+            console.log("Document updated")
+            weatherApp.modifyDocument(data['location'], data, indexedName).then((result) => {
+                // Here print data to front end
+                return weatherApp.successHandler('Updated: ' + result)
+            }).catch((e) => {
+                return weatherApp.errorHandler("Update Error: " + (e.stack || e));
+            })
+
+        }
+        console.log(data);
+    },
+
+
 
 //          >>>>>>>>>Workers<<<<<<<<<<
-    worker: (message) => {
+    // Worker that calls to the OpenWeatherAPI and registers that data to the MongoDB
+    worker: (message, exist) => {
         const myWorker = new Worker('./Assets/Development/Workers/api.js');
 
         myWorker.postMessage(message);
-        myWorker.onmessage = (message) => {
-            weatherApp.postData("https://localhost/AirshopWeather_V2/index.html/saved_data", message.data).then(() => {
-                console.log("success")
+        myWorker.onmessage = (msg) => {
+            weatherApp.postData("https://localhost/AirshopWeather_V2/index.html/saved_data", msg.data).then(() => {
+                console.log("Successfully updated Mongo from API")
+                // Call function
+                weatherApp.getData(message, exist);
             })
+
         }
+
         return myWorker;
     },
 
@@ -90,16 +143,18 @@ let weatherApp = {
 
 
 //          >>>>>>>>>Data Handlers<<<<<<<<<<
+    // Post data from the API to the MongoDB
     postData: async (url, data) => {
         const response = await fetch(url, {
             method: 'PUT',
-            body: JSON.stringify({data: data, type: 'forecast', location: "Thessaloniki"}),  //na tsekaroume an exei data to array pou erxetai
+            body: JSON.stringify({data: data, type: 'airPollution', location: "Thessaloniki"}),  /*TODO fix type and
+                                                                                                        location to be inputted by front end */
             headers: {'Content-Type': 'text/html'}
         });
         return response;
     },
 
-
+    // Gets data from MongoDB and chooses if to update IndexedDB or call API to get new data
     getData: async (data, exist) => {
 
         await fetch("https://localhost/AirshopWeather_V2/index.html/saved_data", {
@@ -108,32 +163,14 @@ let weatherApp = {
             headers: {'Content-Type': 'application/json'}
         }).then(response => {
             return response.json();
-        }).then((responseData) => {
+        }).then((mongoResponse) => {
 
-            if (!responseData){
-               weatherApp.worker(data);
-            }
-
-            const indexedName = weatherApp.indexedChooser(responseData['type']);
-
-            if (!exist) {
-                //Not exist in index
-                //Insert in index
-                console.log("New location data added")
-                weatherApp.addToDatabase(responseData, indexedName).then((result) => {
-                    return weatherApp.successHandler('Added: ' + result)
-                }).catch((e) => {
-                    return weatherApp.errorHandler("Error: " + (e.stack || e));
-                })
+            // If Mongo does not have the data
+            if (mongoResponse === false) {
+                // Call worker to fetch them from the API
+                weatherApp.worker(data, exist);
             } else {
-                try {
-                    weatherApp.modifyDocument(responseData['location'], responseData, indexedName)
-                    console.log("Document updated")
-                    return weatherApp.successHandler('Updated: ' + result)
-                } catch (e) {
-                    return weatherApp.errorHandler("Update Error: " + (e.stack || e));
-                }
-
+                weatherApp.updateIndexedDB(mongoResponse, exist);
             }
         })
             .catch((e) => {
@@ -142,39 +179,41 @@ let weatherApp = {
 
     },
 
+    // Handles the data from the IndexedDB and chooses if to print them or to request new data
     dataHandler: (data) => {
 
-        const indexedName = weatherApp.indexedChooser(data['type']);
-        const storedData = weatherApp.getStoredData(indexedName);
-        let exist = false;
+        const indexedName = weatherApp.indexedPicker(data['type']);
+        const storedData = weatherApp.getStoredData(indexedName, data['location']);
+        let existInIndexedDB = false;
         storedData.then(response => {
-            if (response.length !== 0) {
-                for (let i = 0; i < response.length; i++) {
-                    if (response[i]["location"] === data["location"]) {
-                        exist = true;
 
-                        // From indexedDb                               // Add 2 hours in ms format     // Current Date in ms
-                        if ((Number(response[i]['expireAt'].$date.$numberLong) + (2 * weatherApp.getInterval("h", true))) <= Date.now()) {
-                            // Call Mongo
-                            console.log("Getting data from Mongo")
-                            weatherApp.getData(data,exist);
-                        } else {
-                            // Print from indexedDb
-                            console.log("Data is already in IndexedDB")
-                        }
-                    }
+            if (response.length !== 0) {
+                existInIndexedDB = true;
+
+                // From indexedDb                               // Add 2 hours in ms format     // Current Date in ms
+                if ((Number(response[0]['expireAt'].$date.$numberLong) + (2 * weatherApp.getInterval("h", true))) <= Date.now()) {
+                    // Call Mongo
+                    console.log("Getting data from Mongo to update")
+                    weatherApp.getData(data, existInIndexedDB);
+                } else {
+                    // Print from indexedDb
+                    console.log(response)
+                    console.log("Data is already in IndexedDB")
                 }
-            } else if (response.length === 0 || exist === false) {
-                weatherApp.getData(data,exist);
+
+            } else if (response.length === 0 || existInIndexedDB === false) {
+                console.log("Getting data from Mongo to add new")
+                weatherApp.getData(data, existInIndexedDB);
             }
         })
     },
 
 
 
-//          >>>>>>>>>Helping Functions<<<<<<<<<<
+//          >>>>>>>>>Toolkit<<<<<<<<<<
 
-    indexedChooser: (type) => {
+    // Picks the correct 'table' from indexedDB that user requested
+    indexedPicker: (type) => {
         switch (type) {
             case "airPollution":
                 return "myAirPollution"
@@ -190,6 +229,7 @@ let weatherApp = {
         }
     },
 
+    // Returns the correct number based on ms,sec,min,hour that user requests
     getInterval: (string, inMs = false) => {
         let second;
         if (inMs) {
@@ -212,6 +252,7 @@ let weatherApp = {
     }
 }
 
+
 // let message = {
 //     'Location': 'Thessaloniki',
 //     'Type': 'forecast'
@@ -219,8 +260,9 @@ let weatherApp = {
 // weatherApp.worker(message);
 // weatherApp.getData(data);
 
-let data = {type: 'weather', location: 'Athens'}
-weatherApp.getData(data,false);
 
 // let data = {type: 'forecast', location: 'Thessaloniki'}
-// weatherApp.dataHandler(data);
+// weatherApp.getData(data, false);
+
+let data = {type: 'airPollution', location: 'Thessaloniki'}
+weatherApp.dataHandler(data);
