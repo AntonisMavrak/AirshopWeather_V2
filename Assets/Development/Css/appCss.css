@@ -126,7 +126,7 @@ button:hover {
     flex-flow: row wrap;
     align-items: center;
 }
-#cityName, #countryName, #mySearch{
+#cityName, #countryName, #mySearch, #searchSelect{
     margin:0 8px;
 }
 

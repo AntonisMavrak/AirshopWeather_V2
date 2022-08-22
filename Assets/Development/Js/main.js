@@ -15,6 +15,11 @@ let weatherApp = {
             weatherApp.buildJavaS();
         }else{
             pageContainer.insertAdjacentHTML('beforeend', weatherApp.buildData(pageData));
+            //weatherApp.getSearchData();
+            // weatherApp.postData();
+            //weatherApp.changeAction();
+
+            //weatherApp.getFData();
         }
     },
 
@@ -268,6 +273,6 @@ let weatherApp = {
 
 // let data = {type: 'forecast', location: 'Thessaloniki'}
 // weatherApp.getData(data, false);
-
+weatherApp.init();
 let data = {type: 'airPollution', location: 'Thessaloniki'}
 weatherApp.dataHandler(data);

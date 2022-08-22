@@ -123,7 +123,8 @@ export function loginPage(data) {
 <div id="content" class="tabSearch">
         <div id="mainSearch">
             <div id="search">
-                <form action="history" method="post" id="formSearch"  class="inline">
+<!--            action="history" method="post"onsubmit="return getFormData()"-->
+                <form id="formSearch"  action="history" method="post"  class="inline">
                     <!-- City input -->
                     <div id="searchCity">
                         <input type="text" name="sCity" placeholder="Enter City Name" id="cityName" required>
@@ -134,22 +135,22 @@ export function loginPage(data) {
                     </div>
                     <!-- Search Type input -->
                     <div id="searchType">
-                    <select name="sType">
-                         <option value="0">Select Type of Search:</option>
-                         <option value="weather">weather</option>
-                         <option value="airPollution">airPollution</option>  
-                         <option value="forecast">forecast</option>
+                    <select name="sType" id="searchSelect" required>
+                         <option value="" disabled selected>${data['optionS1']}</option>
+                         <option value="weather">${data['optionS2']}</option>
+                         <option value="airPollution">${data['optionS3']}</option>  
+                         <option value="forecast">${data['optionS4']}</option>
                     </select>
 <!--                        <input type="text" name="sType" placeholder="Enter your search" id="mySearch" required>-->
 
                     </div>
                     <!-- Submit button -->
-                    <button type="submit" name="submitSearch">${data['buttonSearch']}</button>
+                    <button type="submit" name="submitSearch" id="searchBtn">${data['buttonSearch']}</button>
                 </form>
             </div>
         </div>
         </div>
-    <div id="searchResult" hidden>
+    <div id="searchResult" >
     </div>`;
 
 }
