@@ -124,10 +124,10 @@ export function loginPage(data) {
         <div id="mainSearch">
             <div id="search">
 <!--            action="history" method="post"onsubmit="return getFormData()"-->
-                <form id="formSearch"  action="history" method="post"  class="inline">
+                <form id="formSearch"  action="saved_data" method="post"  class="inline">
                     <!-- City input -->
                     <div id="searchCity">
-                        <input type="text" name="sCity" placeholder="Enter City Name" id="cityName" required>
+                        <input type="text" name="location" placeholder="Enter City Name" id="cityName" required>
                     </div>
                     <!-- Country input -->
                     <div id="searchCountry">
@@ -135,7 +135,7 @@ export function loginPage(data) {
                     </div>
                     <!-- Search Type input -->
                     <div id="searchType">
-                    <select name="sType" id="searchSelect" required>
+                    <select name="type" id="searchSelect" required>
                          <option value="" disabled selected>${data['optionS1']}</option>
                          <option value="weather">${data['optionS2']}</option>
                          <option value="airPollution">${data['optionS3']}</option>  

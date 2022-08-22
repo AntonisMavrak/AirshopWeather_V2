@@ -108,7 +108,7 @@ class User
 //        var_dump($_SESSION["usernameL"]);
 
         $name = $_SESSION["usernameL"];
-        $historyData = $input['sType']." ".$input['sCity'].", ".$input['sCountry'];
+        $historyData = $input['type']." ".$input['location'].", ".$input['sCountry'];
 
 
         if ($historyData == !null) {

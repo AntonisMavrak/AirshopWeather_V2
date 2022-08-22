@@ -18,7 +18,8 @@ class weatherData
     }
 
     private function checkData($input, $collection)
-    {      print_r($input['type']);
+    {
+        print_r($input['type']);
 
             $match = [ 'location'=>$input['location'],
                 'type' => $input['type']];
