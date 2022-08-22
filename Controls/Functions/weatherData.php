@@ -11,13 +11,13 @@ class weatherData
 
     function handleData($input, $method)
     {   //an inai allh method?
-        // TODO CHEK METHOD
+        // TODO CHECK METHOD
         // TODO CONNECT DB
         $collection = $this->mongo('weatherdata');
-        return ($method === "POST") ? $this->chekData($input, $collection) : $this->recordData($input, $collection);
+        return ($method === "POST") ? $this->checkData($input, $collection) : $this->recordData($input, $collection);
     }
 
-    private function chekData($input, $collection)
+    private function checkData($input, $collection)
     {      print_r($input['type']);
 
             $match = [ 'location'=>$input['location'],
@@ -39,7 +39,7 @@ class weatherData
     private function recordData($input, $collection)
     {
 
-        if ($this->chekData($input, $collection)===false)
+        if ($this->checkData($input, $collection)===false)
         {
             try {
                 $input['data']=json_decode($input['data'],true);
