@@ -188,11 +188,15 @@ let weatherApp = {
         let existInIndexedDB = false;
         storedData.then(response => {
 
+            // If there is a match in indexedDB
             if (response.length !== 0) {
                 existInIndexedDB = true;
+                // Date in timestamp format
+                const createdDate = Number(response[0]['expireAt'].$date.$numberLong);
+                const expireDate = createdDate + (2 * weatherApp.getInterval("h", true));
 
-                // From indexedDb                               // Add 2 hours in ms format     // Current Date in ms
-                if ((Number(response[0]['expireAt'].$date.$numberLong) + (2 * weatherApp.getInterval("h", true))) <= Date.now()) {
+                // If expire date has passed
+                if (expireDate <= Date.now()) {
                     // Call Mongo
                     console.log("Getting data from Mongo to update")
                     weatherApp.getData(data, existInIndexedDB);
@@ -201,7 +205,7 @@ let weatherApp = {
                     console.log(response)
                     console.log("Data is already in IndexedDB")
                 }
-
+            // If there is not a match in indexedDB
             } else if (response.length === 0 || existInIndexedDB === false) {
                 console.log("Getting data from Mongo to add new")
                 weatherApp.getData(data, existInIndexedDB);

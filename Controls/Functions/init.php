@@ -22,7 +22,7 @@ class init
         //var_dump($input);
 
         if (!empty($input)) {
-            return $this->runCommand($input, $_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI'],);
+            return $this->runCommand($input, $_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
         } else if ($router->routing($request)) {
 
             if(isset($_SESSION["usernameL"])){
@@ -63,7 +63,6 @@ class init
             case 'saved_data':
                 $data = new weatherData();
                 return json_encode($data->handleData($decodeInput, $method), true);
-                break;
             default:
                 return false;
 
@@ -102,9 +101,7 @@ class init
 
         $arrayTemplate = (array) $template;
 
-        $html = strtr($bluePrint, $arrayTemplate);
-
-        return $html;
+        return strtr($bluePrint, $arrayTemplate);
 
     }
 // private function getData(){
