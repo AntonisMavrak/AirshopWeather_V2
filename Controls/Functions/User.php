@@ -48,67 +48,50 @@ class User
         $existingUser = $this->isRegisteredUser($input['usernameL']);
         if ($existingUser !== null) {
             if ($input['pwdL'] === $existingUser['password']) {
-
                 $_SESSION["usernameL"] = $input['usernameL'];
                 $_SESSION["id"] = $existingUser["_id"];
-
-//              echo "<script> alert('Successfully logged in!!') </script>";
-//              header("Location: index.html");
-
                 echo "<script>window.location.href = 'index.html'
                       alert('Successfully logged in!!') </script>";
-
-
             } else {
                 echo "<script> window.location.href = 'index.html'
                     alert('User does not exist') </script>";
-                //header('Location: index.html');
             }
         } else {
             echo "<script> window.location.href = 'index.html'
                         alert('User does not exist')</script>";
-            // header('Location: index.html');
         }
     }
 
 
-// exit session
+    // Logout user and clears session
     public function logout()
     {
         unset($_SESSION["id"]);
         unset($_SESSION["usernameL"]);
         unset($_SESSION["pwdL"]);
-
         echo "<script> window.location.href = 'index.html'
               alert('Successfully logged out!!')</script>";
-//        header("Location: index.html");
     }
 
 
     // Checks database if user is registered in database
     public function isRegisteredUser($name)
     {
-
         $collection = $this->mongo('users');
         $match = [
             'username' => $name
         ];
         $options = [
-
         ];
-
         return $collection->findOne($match, $options);
-
     }
 
-    // Save the last 10 searches that the user chose
+    // Saves the last 10 searches that the user chose
     public function saveSearch($input, $historyFlag)
     {
 
-//        var_dump($_SESSION["usernameL"]);
-
         $name = $_SESSION["usernameL"];
-        $historyData = $input['type']." ".$input['location'].", ".$input['sCountry'];
+        $historyData = $input['type'] . " " . $input['location'] . ", " . $input['sCountry'];
 
 
         if ($historyData == !null) {
@@ -144,8 +127,8 @@ class User
         }
     }
 
-    // Returns the searches that have been saved in the db
-    private function showSearch($pagesData, $historyFlag)
+    // Returns true if there are searches of the user and echos them
+    private function showSearch($pagesData, $historyFlag): bool
     {
 
         if ($pagesData !== null) {

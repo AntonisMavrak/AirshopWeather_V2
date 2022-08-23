@@ -11,23 +11,23 @@ class routing
     use Database;
 
 
+    // Receives a page and checks if it ends in .html or not
     public function routing($page):bool
     {
-        //
         $page = mb_strtolower($page);
 
         // Checks if page ends in '.html'
         if ((strlen($page) - strlen('.html')) === strrpos($page, '.html')) {
-            $namePage = $this->sanitazePage($page);
+            $namePage = $this->sanitizePage($page);
             return  $this->isRegisteredPage($namePage);
         } else {
-            echo 'Does not end in .html';
+            echo 'Page does not end in .html';
             return  false;
         }
 
     }
 
-    // Checks if page is registered in
+    // Checks if page is registered in MongoDB
     private function isRegisteredPage($pageName): bool
     {
         $collection = $this->mongo('pages');
@@ -43,6 +43,7 @@ class routing
         if ($pagesData!==null) {
             return true;
         }
+        echo 'Page is not registered';
         return false;
     }
 
