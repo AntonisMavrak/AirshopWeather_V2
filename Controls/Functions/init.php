@@ -40,10 +40,10 @@ class init
         $uri = $this->sanitazeUri($uri);
         parse_str($input, $data);
 //        var_dump($input);
-//        $in = json_decode($input,true);
+//        $decodeInput = json_decode($input,true);
         $decodeInput = json_decode(json_encode($data), true);
 
-        //var_dump($decodeInput);
+
 
         $user = new User();
 
@@ -62,7 +62,7 @@ class init
                 break;
             case 'saved_data':
                 $data = new weatherData();
-                return json_encode($data->handleData($decodeInput, $method), true);
+                return json_encode($data->handleData(json_decode($input,true), $method), true);
             default:
                 return false;
 

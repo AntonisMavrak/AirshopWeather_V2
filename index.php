@@ -24,4 +24,3 @@ $load = new Controls\Functions\init();
 
 echo ($load->load());
 
-echo '<script type="module" src="Assets/Development/Js/main.js"></script>';

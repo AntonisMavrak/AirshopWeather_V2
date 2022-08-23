@@ -153,7 +153,7 @@ let weatherApp = {
     postData: async (url, data) => {
         const response = await fetch(url, {
             method: 'PUT',
-            body: JSON.stringify({data: data, type: 'airPollution', location: "Thessaloniki"}),  /*TODO fix type and
+            body: JSON.stringify({data: data, type: 'weather', location: "Thessaloniki"}),  /*TODO fix type and
                                                                                                         location to be inputted by front end */
             headers: {'Content-Type': 'text/html'}
         });
@@ -168,9 +168,10 @@ let weatherApp = {
             body: JSON.stringify(data),
             headers: {'Content-Type': 'application/json'}
         }).then(response => {
+            console.log(response);
             return response.json();
         }).then((mongoResponse) => {
-
+                console.log(mongoResponse);
             // If Mongo does not have the data
             if (mongoResponse === false) {
                 // Call worker to fetch them from the API
@@ -274,5 +275,5 @@ let weatherApp = {
 // let data = {type: 'forecast', location: 'Thessaloniki'}
 // weatherApp.getData(data, false);
 weatherApp.init();
-let data = {type: 'airPollution', location: 'Thessaloniki'}
+let data = {type: 'weather', location: 'Thessaloniki'}
 weatherApp.dataHandler(data);
