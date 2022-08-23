@@ -29,14 +29,13 @@ onmessage = (event) => {
                     })
                 }
             });
-
             break;
         default:
             postMessage('Wrong data["type"] passed');
     }
 }
 
-
+// Returns the weather as JSON of a city name that is passed
 let getWeather = async (city_select) => {
     let key = '80d2ff5f959352f4319d73dc1f0171ce';
     return fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city_select},eng&lang=eng&units=metric&appid=${key}`,
@@ -49,9 +48,9 @@ let getWeather = async (city_select) => {
             return error;
         });
 
-
 }
 
+// Returns the air pollution data as JSON of the lat and lon location that is passed
 let airPollution = async (lat,lon) => {
     let key = '80d2ff5f959352f4319d73dc1f0171ce';
     return fetch(`https://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${lat}&lon=${lon}&appid=${key}`,
@@ -67,6 +66,7 @@ let airPollution = async (lat,lon) => {
 
 }
 
+// Returns the forecast as JSON of the lat and lon location that is passed
 let weatherForecast = async (lat,lon) => {
 
     let key = '80d2ff5f959352f4319d73dc1f0171ce';
@@ -81,6 +81,7 @@ let weatherForecast = async (lat,lon) => {
         });
 }
 
+// Returns lat and lot as JSON based of a city name that is passed
 let findLocation = async (city_name) => {
     let key = '80d2ff5f959352f4319d73dc1f0171ce';
     let country_code = 'GR';
@@ -95,8 +96,6 @@ let findLocation = async (city_name) => {
             return error;
         });
 }
-// findLocation('Thessaloniki').then((response) => {
-//     postMessage(JSON.stringify(response));
-// });
+
 
 

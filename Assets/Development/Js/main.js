@@ -10,10 +10,10 @@ let weatherApp = {
         const pageData = JSON.parse(dataElement.innerText);
         let pageContainer = document.getElementById('container');
 
-        if(document.body.id === 'index'){
+        if (document.body.id === 'index') {
             pageContainer.insertAdjacentHTML('beforeend', weatherApp.buildApp(pageData));
             weatherApp.buildJavaS();
-        }else{
+        } else {
             pageContainer.insertAdjacentHTML('beforeend', weatherApp.buildData(pageData));
             weatherApp.runSearch();
             //weatherApp.getSearchData();
@@ -48,7 +48,6 @@ let weatherApp = {
             'message': data
         }
     },
-
 
 
 //          >>>>>>>>>IndexedDb functions<<<<<<<<<<
@@ -123,7 +122,6 @@ let weatherApp = {
     },
 
 
-
 //          >>>>>>>>>Workers<<<<<<<<<<
     // Worker that calls to the OpenWeatherAPI and registers that data to the MongoDB
     worker: (message, exist) => {
@@ -134,9 +132,9 @@ let weatherApp = {
             const msgJson = JSON.parse(msg.data)
 
             // If message['location'] does not exist or is wrong
-            if (msgJson['cod'] == '404'){
+            if (msgJson['cod'] == '404') {
                 console.log("Location that was passed does not exist or could not be found")
-            }else {
+            } else {
                 weatherApp.postData("https://localhost/AirshopWeather_V2/index.html/saved_data", msg.data, message).then(() => {
                     console.log("Successfully updated Mongo from OpenWeatherAPI")
                     // Call function
@@ -148,19 +146,14 @@ let weatherApp = {
         return myWorker;
     },
 
-    indexedDBWorker: () => {
-        const dbWorker = new Worker('./Assets/Development/Workers/indexeddbWorker.js');
-        dbWorker.postMessage("asg")
-    },
-
 
 //          >>>>>>>>>Data Handlers<<<<<<<<<<
+
     // Post data from the API to the MongoDB
     postData: async (url, data, requestedData) => {
         const response = await fetch(url, {
             method: 'PUT',
-            body: JSON.stringify({data: data, type: requestedData['type'], location: requestedData['location']}),  /*TODO fix type and
-                                                                                                        location to be inputted by front end */
+            body: JSON.stringify({data: data, type: requestedData['type'], location: requestedData['location']}),
             headers: {'Content-Type': 'text/html'}
         });
         return response;
@@ -214,7 +207,7 @@ let weatherApp = {
                     // Print from indexedDb
                     console.log("Data already in IndexedDB")
                 }
-            // If there is not a match in indexedDB
+                // If there is not a match in indexedDB
             } else if (response.length === 0 || existInIndexedDB === false) {
                 console.log("Getting new data from MongoDB to add in IndexedDB")
                 weatherApp.getData(data, existInIndexedDB);
@@ -222,6 +215,24 @@ let weatherApp = {
         })
     },
 
+    runSearch: () => {
+        let form = document.getElementById('formSearch');
+
+        form.addEventListener('submit', function (e) {
+
+// Prevent default behavior
+            e.preventDefault();
+// Create new FormData object
+
+            const myFormData = new FormData(event.target);
+
+            const formDataObj = {};
+            myFormData.forEach((value, key) => (formDataObj[key] = value));
+
+
+            weatherApp.dataHandler(formDataObj);
+        });
+    },
 
 
 //          >>>>>>>>>Toolkit<<<<<<<<<<
@@ -263,39 +274,9 @@ let weatherApp = {
             default:
                 throw new Error("There was no correct data parsed");
         }
-    },
-    runSearch: () => {
-        let form = document.getElementById('formSearch');
-
-        form.addEventListener('submit', function (e) {
-
-// Prevent default behavior
-            e.preventDefault();
-// Create new FormData object
-
-            const myFormData = new FormData(event.target);
-
-            const formDataObj = {};
-            myFormData.forEach((value, key) => (formDataObj[key] = value));
-            console.log(formDataObj);
-
-
-            weatherApp.dataHandler(formDataObj);
-        });
     }
 }
 
 
-// let message = {
-//     'Location': 'Thessaloniki',
-//     'Type': 'forecast'
-// }
-// weatherApp.worker(message);
-// weatherApp.getData(data);
-
-
-// let data = {type: 'forecast', location: 'Thessaloniki'}
-// weatherApp.getData(data, false);
 weatherApp.init();
-// let data = {type: 'airPollution', location: 'Thessaloniki'}
-// weatherApp.dataHandler(data);
+
