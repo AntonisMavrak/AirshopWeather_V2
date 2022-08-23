@@ -8,23 +8,31 @@ onmessage = (event) => {
             break;
         case 'airPollution':
             findLocation(event.data['location']).then((response) => {
-                airPollution(response[0].lat,response[0].lon).then((response) => {
-                    postMessage(JSON.stringify(response));
-                })
+                // City passed does not exist or could not be found
+                if (response.length === 0){
+                    postMessage('{"cod":"404"}');
+                }else {
+                    airPollution(response[0].lat, response[0].lon).then((response) => {
+                        postMessage(JSON.stringify(response));
+                    })
+                }
             });
             break;
         case'forecast':
             findLocation(event.data['location']).then((response) => {
-                weatherForecast(response[0].lat,response[0].lon).then((response) => {
-                    postMessage(JSON.stringify(response));
-                })
+                // City passed does not exist or could not be found
+                if (response.length === 0){
+                    postMessage('{"cod":"404"}');
+                }else {
+                    weatherForecast(response[0].lat, response[0].lon).then((response) => {
+                        postMessage(JSON.stringify(response));
+                    })
+                }
             });
 
             break;
         default:
-            postMessage('ola lathos');
-
-
+            postMessage('Wrong data["type"] passed');
     }
 }
 

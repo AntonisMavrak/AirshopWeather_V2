@@ -55,11 +55,9 @@ let weatherApp = {
     // Adds new document to indexedDB
     addToDatabase: async (data, indexedName) => {
 
-        console.log(data["location"])
         return await indexeddb[indexedName]
             .add(data)
             .then((location) => {
-                console.log(location);
                 return weatherApp.successHandler('Data added');
             })
             .catch((e) => {
@@ -102,7 +100,7 @@ let weatherApp = {
         // If not exist in IndexedDB
         if (!exist) {
             //Insert in indexedDB
-            console.log("New location data added")
+            console.log("New location '" + data['location'] + "' added in IndexedDB")
             weatherApp.addToDatabase(data, indexedName).then((result) => {
                 // Here print data to front end
                 return weatherApp.successHandler('Added: ' + result)
@@ -111,7 +109,7 @@ let weatherApp = {
             })
         } else {
             //Update in indexedDB
-            console.log("Document updated")
+            console.log("Document '" + data['location'] + "' updated in IndexedDB")
             weatherApp.modifyDocument(data['location'], data, indexedName).then((result) => {
                 // Here print data to front end
                 return weatherApp.successHandler('Updated: ' + result)
@@ -120,6 +118,7 @@ let weatherApp = {
             })
 
         }
+        console.log("Data that was saved: ")
         console.log(data);
     },
 
@@ -132,12 +131,18 @@ let weatherApp = {
 
         myWorker.postMessage(message);
         myWorker.onmessage = (msg) => {
-            weatherApp.postData("https://localhost/AirshopWeather_V2/index.html/saved_data", msg.data, message).then(() => {
-                console.log("Successfully updated Mongo from API")
-                // Call function
-                weatherApp.getData(message, exist);
-            })
+            const msgJson = JSON.parse(msg.data)
 
+            // If message['location'] does not exist or is wrong
+            if (msgJson['cod'] == '404'){
+                console.log("Location that was passed does not exist or could not be found")
+            }else {
+                weatherApp.postData("https://localhost/AirshopWeather_V2/index.html/saved_data", msg.data, message).then(() => {
+                    console.log("Successfully updated Mongo from OpenWeatherAPI")
+                    // Call function
+                    weatherApp.getData(message, exist);
+                })
+            }
         }
 
         return myWorker;
@@ -169,10 +174,8 @@ let weatherApp = {
             body: JSON.stringify(data),
             headers: {'Content-Type': 'application/json'}
         }).then(response => {
-            console.log(data);
             return response.json();
         }).then((mongoResponse) => {
-                console.log(mongoResponse);
             // If Mongo does not have the data
             if (mongoResponse === false) {
                 // Call worker to fetch them from the API
@@ -209,12 +212,11 @@ let weatherApp = {
                     weatherApp.getData(data, existInIndexedDB);
                 } else {
                     // Print from indexedDb
-                    console.log(response)
-                    console.log("Data is already in IndexedDB")
+                    console.log("Data already in IndexedDB")
                 }
             // If there is not a match in indexedDB
             } else if (response.length === 0 || existInIndexedDB === false) {
-                console.log("Getting data from Mongo to add new")
+                console.log("Getting new data from MongoDB to add in IndexedDB")
                 weatherApp.getData(data, existInIndexedDB);
             }
         })
