@@ -40,10 +40,10 @@ class init
         $uri = $this->sanitazeUri($uri);
         parse_str($input, $data);
 //        var_dump($input);
-//        $decodeInput = json_decode($input,true);
+//        $in = json_decode($input,true);
         $decodeInput = json_decode(json_encode($data), true);
 
-
+        //var_dump($decodeInput);
 
         $user = new User();
 

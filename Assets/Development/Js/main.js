@@ -15,6 +15,7 @@ let weatherApp = {
             weatherApp.buildJavaS();
         }else{
             pageContainer.insertAdjacentHTML('beforeend', weatherApp.buildData(pageData));
+            weatherApp.runSearch();
             //weatherApp.getSearchData();
             // weatherApp.postData();
             //weatherApp.changeAction();
@@ -131,7 +132,7 @@ let weatherApp = {
 
         myWorker.postMessage(message);
         myWorker.onmessage = (msg) => {
-            weatherApp.postData("https://localhost/AirshopWeather_V2/index.html/saved_data", msg.data).then(() => {
+            weatherApp.postData("https://localhost/AirshopWeather_V2/index.html/saved_data", msg.data, message).then(() => {
                 console.log("Successfully updated Mongo from API")
                 // Call function
                 weatherApp.getData(message, exist);
@@ -150,10 +151,10 @@ let weatherApp = {
 
 //          >>>>>>>>>Data Handlers<<<<<<<<<<
     // Post data from the API to the MongoDB
-    postData: async (url, data) => {
+    postData: async (url, data, requestedData) => {
         const response = await fetch(url, {
             method: 'PUT',
-            body: JSON.stringify({data: data, type: 'weather', location: "Thessaloniki"}),  /*TODO fix type and
+            body: JSON.stringify({data: data, type: requestedData['type'], location: requestedData['location']}),  /*TODO fix type and
                                                                                                         location to be inputted by front end */
             headers: {'Content-Type': 'text/html'}
         });
@@ -168,7 +169,7 @@ let weatherApp = {
             body: JSON.stringify(data),
             headers: {'Content-Type': 'application/json'}
         }).then(response => {
-            console.log(response);
+            console.log(data);
             return response.json();
         }).then((mongoResponse) => {
                 console.log(mongoResponse);
@@ -260,6 +261,25 @@ let weatherApp = {
             default:
                 throw new Error("There was no correct data parsed");
         }
+    },
+    runSearch: () => {
+        let form = document.getElementById('formSearch');
+
+        form.addEventListener('submit', function (e) {
+
+// Prevent default behavior
+            e.preventDefault();
+// Create new FormData object
+
+            const myFormData = new FormData(event.target);
+
+            const formDataObj = {};
+            myFormData.forEach((value, key) => (formDataObj[key] = value));
+            console.log(formDataObj);
+
+
+            weatherApp.dataHandler(formDataObj);
+        });
     }
 }
 
@@ -275,5 +295,5 @@ let weatherApp = {
 // let data = {type: 'forecast', location: 'Thessaloniki'}
 // weatherApp.getData(data, false);
 weatherApp.init();
-let data = {type: 'weather', location: 'Thessaloniki'}
-weatherApp.dataHandler(data);
+// let data = {type: 'airPollution', location: 'Thessaloniki'}
+// weatherApp.dataHandler(data);

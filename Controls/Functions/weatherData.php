@@ -19,6 +19,11 @@ class weatherData
 
     private function checkData($input, $collection)
     {
+//        print_r($input);
+//        $input= json_decode(json_encode($input, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT),true);
+
+//        $input1 = (array) $input;
+//        $input = json_decode($input,true);
 
             $match = [ 'location'=>$input['location'],
                 'type' => $input['type']];

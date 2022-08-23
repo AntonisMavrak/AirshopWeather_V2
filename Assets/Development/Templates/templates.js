@@ -98,14 +98,8 @@ export function buildPills() {
             loginForm.hidden = false;
             loginColor.className = "active";
             registerColor.classList.remove("active");
-            //document.body.id = 'login';
         }
     });
-
-    // submitLogin.addEventListener('click', ()=>
-    // {
-    //     document.getElementById('formL').action = 'login/index.html';
-    // });
 
 }
 
@@ -124,7 +118,7 @@ export function loginPage(data) {
         <div id="mainSearch">
             <div id="search">
 <!--            action="history" method="post"onsubmit="return getFormData()"-->
-                <form id="formSearch"  action="saved_data" method="post"  class="inline">
+                <form id="formSearch" action="history" method="post"  class="inline">
                     <!-- City input -->
                     <div id="searchCity">
                         <input type="text" name="location" placeholder="Enter City Name" id="cityName" required>
