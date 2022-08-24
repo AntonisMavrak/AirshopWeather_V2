@@ -294,6 +294,8 @@ let weatherApp = {
             body: JSON.stringify(error),
             headers: {'Content-Type': 'application/json'}
         })
+    },sanitizeData:()=>{
+
     }
 }
 
