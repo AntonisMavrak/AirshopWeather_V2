@@ -118,7 +118,7 @@ export function loginPage(data) {
         <div id="mainSearch">
             <div id="search">
 <!--            action="history" method="post"onsubmit="return getFormData()"-->
-                <form id="formSearch" action="history" method="post"  class="inline">
+                <form id="formSearch" class="inline">
                     <!-- City input -->
                     <div id="searchCity">
                         <input type="text" name="location" placeholder="Enter City Name" id="cityName" required>

@@ -113,6 +113,7 @@ class User
 
         if ($historyData == !null) {
 
+            try {
             $collection = $this->mongo('users');
             $match = [
                 'username' => $name
@@ -135,9 +136,15 @@ class User
             }
             $collection->updateOne($match, $insert);
 
-            $this->showSearch($pagesData, $historyFlag);
+                header("Location: index.html");
+            } catch (\Exception $e) {
+                echo "error message: " . $e->getMessage() . "\n";
+                echo "error code: " . $e->getCode() . "\n";
+            }
 
-            header("Location: index.html");
+//            $this->showSearch($pagesData, $historyFlag);
+
+//           header("Location: index.html");
 
         } else {
             echo '<script>alert("Insert Data !!!")</script>';

@@ -10,17 +10,12 @@ let weatherApp = {
         const pageData = JSON.parse(dataElement.innerText);
         let pageContainer = document.getElementById('container');
 
-        if(document.body.id === 'index'){
+        if (document.body.id === 'index') {
             pageContainer.insertAdjacentHTML('beforeend', weatherApp.buildApp(pageData));
             weatherApp.buildJavaS();
-        }else{
+        } else {
             pageContainer.insertAdjacentHTML('beforeend', weatherApp.buildData(pageData));
             weatherApp.runSearch();
-            //weatherApp.getSearchData();
-            // weatherApp.postData();
-            //weatherApp.changeAction();
-
-            //weatherApp.getFData();
         }
     },
 
@@ -48,7 +43,6 @@ let weatherApp = {
             'message': data
         }
     },
-
 
 
 //          >>>>>>>>>IndexedDb functions<<<<<<<<<<
@@ -124,7 +118,6 @@ let weatherApp = {
     },
 
 
-
 //          >>>>>>>>>Workers<<<<<<<<<<
     // Worker that calls to the OpenWeatherAPI and registers that data to the MongoDB
     worker: (message, exist) => {
@@ -172,13 +165,14 @@ let weatherApp = {
             console.log(data);
             return response.json();
         }).then((mongoResponse) => {
-                console.log(mongoResponse);
+            console.log(mongoResponse);
             // If Mongo does not have the data
             if (mongoResponse === false) {
                 // Call worker to fetch them from the API
                 weatherApp.worker(data, exist);
             } else {
                 weatherApp.updateIndexedDB(mongoResponse, exist);
+                weatherApp.displaySData(mongoResponse, false);
             }
         })
             .catch((e) => {
@@ -192,6 +186,8 @@ let weatherApp = {
 
         const indexedName = weatherApp.indexedPicker(data['type']);
         const storedData = weatherApp.getStoredData(indexedName, data['location']);
+
+
         let existInIndexedDB = false;
         storedData.then(response => {
 
@@ -212,14 +208,17 @@ let weatherApp = {
                     console.log(response)
                     console.log("Data is already in IndexedDB")
                 }
-            // If there is not a match in indexedDB
+                weatherApp.displaySData(response, true);
+
+                // If there is not a match in indexedDB
             } else if (response.length === 0 || existInIndexedDB === false) {
                 console.log("Getting data from Mongo to add new")
                 weatherApp.getData(data, existInIndexedDB);
-            }
-        })
-    },
 
+            }
+
+        });
+    },
 
 
 //          >>>>>>>>>Toolkit<<<<<<<<<<
@@ -262,23 +261,109 @@ let weatherApp = {
                 throw new Error("There was no correct data parsed");
         }
     },
+    //          >>>>>>>>>Display Data<<<<<<<<<<
+    displaySData: (data, exist) => {
+
+        console.log(data);
+        let mainData = '';
+
+        if (!exist) {
+            mainData = data;
+        } else {
+            mainData = data[0];
+        }
+
+        // const airPollutionData = data[0]['data']['list'];
+        const searchResult = document.getElementById("searchResult");
+        const heading = document.createElement("h2");
+        const dataLocation = mainData.location;
+        const dataType = mainData.type;
+
+        heading.innerHTML = dataType + " for " + dataLocation;
+        searchResult.appendChild(heading);
+
+        switch (dataType) {
+            case "airPollution":
+                return weatherApp.airPollution(mainData, searchResult);
+                break;
+            case "weather":
+                return weatherApp.weather(mainData, searchResult);
+                break;
+            case "forecast":
+                return weatherApp.forecast(mainData, searchResult);
+                break;
+            default:
+                throw new Error("There was no correct input");
+        }
+
+    },
+    airPollution: (data, searchResult) => {
+    },
+    weather: (data, searchResult) => {
+        // const weatherIcon = document.createElement("img");
+        // weatherIcon.src = data.data['weather'][0].icon;
+        // searchResult.appendChild(weatherIcon);
+        // const paragraphW = document.createElement("p");
+        // paragraphW.innerHTML = data.data['weather'][0].description;
+        //
+        // searchResult.appendChild(paragraphW);
+        //
+        // console.log(data.data['weather'][0].description);
+
+
+    },
+    forecast: (data, searchResult) => {
+    },
+    //          >>>>>>>>>Save Data<<<<<<<<<<
+    saveHistory: (data) => {
+
+        fetch("https://localhost/AirshopWeather_V2/index.html/history", {
+            method: 'PUT',
+            body: JSON.stringify({history: data}),
+            headers: {'Content-Type': 'application/json'}
+        }).then(response => {
+            // console.log(response);
+            response.json();
+        }).catch((e) => {
+            return weatherApp.errorHandler("getData Error: " + (e.stack || e));
+        })
+    },
+    //          >>>>>>>>>Search Data<<<<<<<<<<
     runSearch: () => {
-        let form = document.getElementById('formSearch');
+        const form = document.getElementById('formSearch');
+        const city = document.getElementById('cityName');
+        const country = document.getElementById('countryName');
+        const type = document.getElementById('searchSelect');
+        const searchResult = document.getElementById("searchResult");
+
 
         form.addEventListener('submit', function (e) {
 
-// Prevent default behavior
+            // Prevent default behavior
             e.preventDefault();
-// Create new FormData object
 
+            // delete div data
+            if (searchResult.textContent.trim() !== '') {
+                console.log("mphka");
+                searchResult.textContent = '';
+            }
+
+            // Create new FormData object
             const myFormData = new FormData(event.target);
 
             const formDataObj = {};
             myFormData.forEach((value, key) => (formDataObj[key] = value));
             console.log(formDataObj);
 
+            city.value = "";
+            country.value = "";
+            type.value = "";
 
+
+             weatherApp.saveHistory(formDataObj);
             weatherApp.dataHandler(formDataObj);
+
+
         });
     }
 }

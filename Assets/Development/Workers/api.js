@@ -46,7 +46,7 @@ let getWeather = async (city_select) => {
 
 let airPollution = async (lat,lon) => {
     let key = '80d2ff5f959352f4319d73dc1f0171ce';
-    return fetch(`https://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${lat}&lon=${lon}&appid=${key}`,
+    return fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${key}`,
         {method: 'GET'}
     )
         .then(response => {

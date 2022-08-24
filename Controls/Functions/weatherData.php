@@ -62,7 +62,7 @@ class weatherData
                 echo "error code: " . $e->getCode() . "\n";
             }
         }else{
-            return "exi gini egrafh";
+            return "Data already exists";
         }
     }
 

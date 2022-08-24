@@ -16,14 +16,15 @@ class init
         $router = new routing();
         $input = file_get_contents('php://input');
         $request = $_SERVER['REQUEST_URI'] === ($_SERVER['APP_BASE'] ?? '') ? '/index.html' : $_SERVER['REQUEST_URI'];
-        session_start();
-        session_regenerate_id(true);
+
 
         //var_dump($input);
 
         if (!empty($input)) {
             return $this->runCommand($input, $_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
         } else if ($router->routing($request)) {
+            session_start();
+            session_regenerate_id(true);
 
             if(isset($_SESSION["usernameL"])){
 //                var_dump($_SESSION["usernameL"]);
@@ -40,7 +41,7 @@ class init
         $uri = $this->sanitazeUri($uri);
         parse_str($input, $data);
 //        var_dump($input);
-//        $in = json_decode($input,true);
+        $inputJs = json_decode($input,true);
         $decodeInput = json_decode(json_encode($data), true);
 
         //var_dump($decodeInput);
@@ -58,11 +59,11 @@ class init
                 $user->logout();
                 break;
             case'history':
-                $user->saveSearch($decodeInput, $uri);
+                $user->saveSearch($inputJs, $uri);
                 break;
             case 'saved_data':
                 $data = new weatherData();
-                return json_encode($data->handleData(json_decode($input,true), $method), true);
+                return json_encode($data->handleData($inputJs, $method), true);
             default:
                 return false;
 
