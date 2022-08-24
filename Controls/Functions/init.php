@@ -29,6 +29,7 @@ class init
 
         } else if ($router->routing($request)) {
 
+
             if (isset($_SESSION["usernameL"])) {
                 return $this->run($this->isRegisteredPage('loginPage'));
             } else {

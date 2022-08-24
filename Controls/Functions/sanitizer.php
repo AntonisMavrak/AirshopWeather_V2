@@ -26,7 +26,7 @@ trait sanitizer
         $input=json_decode($input);
 
         foreach( $input as $x => $val) {
-            $input->$x=preg_replace("/[^A-Za-zά-ώΑ-Ωα-ω\d\/\-\._\{\}:\"\,]+/u", '',  $input->$x);
+            $input->$x=preg_replace("/[^A-Za-zά-ώΑ-Ωα-ω\d\/\-\._\{\}:\"\,\[\]]+/u", '',  $input->$x);
         }
         return $input;
     }

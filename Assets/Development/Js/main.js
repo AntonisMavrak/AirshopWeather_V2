@@ -120,6 +120,7 @@ let weatherApp = {
         }
         console.log("Data that was saved: ")
         console.log(data);
+        weatherApp.printData(data);
     },
 
 
@@ -208,6 +209,7 @@ let weatherApp = {
                 } else {
                     // Print from indexedDb
                     console.log("Data already in IndexedDB")
+                    weatherApp.printData(response);
                 }
                 // If there is not a match in indexedDB
             } else if (response.length === 0 || existInIndexedDB === false) {
@@ -222,10 +224,10 @@ let weatherApp = {
 
         form.addEventListener('submit', function (e) {
 
-// Prevent default behavior
+            // Prevent default behavior
             e.preventDefault();
-// Create new FormData object
 
+            // Create new FormData object
             const myFormData = new FormData(event.target);
 
             const formDataObj = {};
@@ -294,8 +296,12 @@ let weatherApp = {
             body: JSON.stringify(error),
             headers: {'Content-Type': 'application/json'}
         })
-    },sanitizeData:()=>{
+    },
 
+    printData: (data) => {
+        let div = document.getElementById('searchResult');
+        div.innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>"
+        ;
     }
 }
 
