@@ -231,12 +231,22 @@ let weatherApp = {
             const formDataObj = {};
             myFormData.forEach((value, key) => (formDataObj[key] = value));
 
-
+            weatherApp.saveHistory(formDataObj);
             weatherApp.dataHandler(formDataObj);
         });
     },
 
+    saveHistory: (data) => {
 
+        console.log(data)
+        fetch("https://localhost/AirshopWeather_V2/index.html/history", {
+            method: 'PUT',
+            body: JSON.stringify({history: data}),
+            headers: {'Content-Type': 'application/json'}
+        }).catch((e) => {
+            return weatherApp.errorHandler("getData Error: " + (e.stack || e));
+        })
+    },
 //          >>>>>>>>>Toolkit<<<<<<<<<<
 
     // Picks the correct 'table' from indexedDB that user requested
@@ -276,7 +286,9 @@ let weatherApp = {
             default:
                 throw new Error("There was no correct data parsed");
         }
-    },postError:async (error)=>{
+    },
+
+    postError: async (error) => {
         await fetch("https://localhost/AirshopWeather_V2/index.html/error_log", {
             method: 'POST',
             body: JSON.stringify(error),
@@ -284,7 +296,6 @@ let weatherApp = {
         })
     }
 }
-
 
 weatherApp.init();
 

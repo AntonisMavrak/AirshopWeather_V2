@@ -44,7 +44,6 @@ class User
     // If user exists then save id and name to session
     public function login($input)
     {
-
         $existingUser = $this->isRegisteredUser($input['usernameL']);
         if ($existingUser !== null) {
             if ($input['pwdL'] === $existingUser['password']) {
@@ -60,6 +59,7 @@ class User
             echo "<script> window.location.href = 'index.html'
                         alert('User does not exist')</script>";
         }
+
     }
 
 
@@ -90,8 +90,10 @@ class User
     public function saveSearch($input, $historyFlag)
     {
 
+        $inputHistory = (json_decode($input)->{"history"});
+
         $name = $_SESSION["usernameL"];
-        $historyData = $input['type'] . " " . $input['location'] . ", " . $input['sCountry'];
+        $historyData = $inputHistory->{"type"} . ", " . $inputHistory->{"location"} . ", " . $inputHistory->{"sCountry"};
 
 
         if ($historyData == !null) {
