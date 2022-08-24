@@ -10,7 +10,6 @@ let weatherApp = {
         const pageData = JSON.parse(dataElement.innerText);
         let pageContainer = document.getElementById('container');
 
-        console.log(document.body.id)
         if (document.body.id === 'loginpage') {
             pageContainer.insertAdjacentHTML('beforeend', weatherApp.buildLogin(pageData));
             weatherApp.buildLoginJs();
