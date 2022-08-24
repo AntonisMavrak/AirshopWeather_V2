@@ -137,6 +137,7 @@ let weatherApp = {
             if (msgJson['cod'] == '404') {
                 weatherApp.postError(msgJson);
                 console.log("Location that was passed does not exist or could not be found")
+                weatherApp.printData("Location that was passed does not exist or could not be found")
             } else {
                 weatherApp.postData("https://localhost/AirshopWeather_V2/index.html/saved_data", msg.data, message).then(() => {
                     console.log("Successfully updated Mongo from OpenWeatherAPI")
