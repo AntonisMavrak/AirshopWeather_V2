@@ -132,19 +132,17 @@ button:hover {
 #searchResult{
     width: 100%;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     margin-top: 50px;
     font-family: "Arial Narrow";
-    /*height: 100%;*/
 }
 
 .sizeButton{
     width: 100%;
 }
 @media (max-width: 800px) {
-    /*#searchCity, #searchCountry, #searchType, #searchSelect{*/
-    /*    margin-block: 8px;*/
-    /*}*/
+
     #cityName, #countryName, #searchSelect, #searchBtn{
         margin-block: 10px;
         margin-inline: 0;

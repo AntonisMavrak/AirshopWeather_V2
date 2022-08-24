@@ -27,12 +27,13 @@ class init
         } else if ($router->routing($request)) {
 
             if(isset($_SESSION["usernameL"])){
-//                var_dump($_SESSION["usernameL"]);
+
                return  $this->run($router->isRegisteredPage('index'));
             }else{
 
               return  $this->run($router->isRegisteredPage('loginpage'));
             }
+
         }
     }
 

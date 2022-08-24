@@ -11,29 +11,24 @@ let weatherApp = {
         let pageContainer = document.getElementById('container');
 
         console.log(document.body.id)
-        if(document.body.id === 'loginpage'){
-            pageContainer.insertAdjacentHTML('beforeend', weatherApp.buildApp(pageData));
-            weatherApp.buildJavaS();
-        }else{
-            pageContainer.insertAdjacentHTML('beforeend', weatherApp.buildData(pageData));
+        if (document.body.id === 'loginpage') {
+            pageContainer.insertAdjacentHTML('beforeend', weatherApp.buildLogin(pageData));
+            weatherApp.buildLoginJs();
+        } else {
+            pageContainer.insertAdjacentHTML('beforeend', weatherApp.buildIndex(pageData));
             weatherApp.runSearch();
-            //weatherApp.getSearchData();
-            // weatherApp.postData();
-            //weatherApp.changeAction();
-
-            //weatherApp.getFData();
         }
     },
 
 //          >>>>>>>>>Page Building Functions<<<<<<<<<<
-    buildApp: (data) => {
-        return indexPage(data);
+    buildLogin: (data) => {
+        return loginPage(data);
     },
-    buildJavaS: () => {
+    buildLoginJs: () => {
         return buildPills();
     },
-    buildData: (data) => {
-        return loginPage(data);
+    buildIndex: (data) => {
+        return indexPage(data);
     },
 
 //          >>>>>>>>>Error/Success Handlers<<<<<<<<<<
@@ -50,7 +45,6 @@ let weatherApp = {
             'message': data
         }
     },
-
 
 //          >>>>>>>>>IndexedDb functions<<<<<<<<<<
     // Adds new document to indexedDB
@@ -121,7 +115,7 @@ let weatherApp = {
         }
         console.log("Data that was saved: ")
         console.log(data);
-        weatherApp.printData(data);
+        weatherApp.printData(data, false);
     },
 
 
@@ -211,7 +205,7 @@ let weatherApp = {
                 } else {
                     // Print from indexedDb
                     console.log("Data already in IndexedDB")
-                    weatherApp.printData(response);
+                    weatherApp.printData(response, true);
                 }
                 // If there is not a match in indexedDB
             } else if (response.length === 0 || existInIndexedDB === false) {
@@ -220,9 +214,12 @@ let weatherApp = {
             }
         })
     },
-
+    //          >>>>>>>>>Search Data<<<<<<<<<<
     runSearch: () => {
-        let form = document.getElementById('formSearch');
+        const form = document.getElementById('formSearch');
+        const city = document.getElementById('cityName');
+        const country = document.getElementById('countryName');
+        const type = document.getElementById('searchSelect');
 
         form.addEventListener('submit', function (e) {
 
@@ -235,11 +232,16 @@ let weatherApp = {
             const formDataObj = {};
             myFormData.forEach((value, key) => (formDataObj[key] = value));
 
+            city.value = "";
+            country.value = "";
+            type.value = "";
+
             weatherApp.saveHistory(formDataObj);
             weatherApp.dataHandler(formDataObj);
         });
     },
 
+    //          >>>>>>>>>Save Data<<<<<<<<<<
     saveHistory: (data) => {
 
         console.log(data)
@@ -291,7 +293,7 @@ let weatherApp = {
                 throw new Error("There was no correct data parsed");
         }
     },
-
+//          >>>>>>>>>Save errors<<<<<<<<<<
     postError: async (error) => {
         await fetch("https://localhost/AirshopWeather_V2/index.html/error_log", {
             method: 'POST',
@@ -299,10 +301,24 @@ let weatherApp = {
             headers: {'Content-Type': 'application/json'}
         })
     },
+//          >>>>>>>>>Display Data<<<<<<<<<<
+    printData: (data, exist) => {
 
-    printData: (data) => {
+        let header = '';
+
+        if (!exist) {
+            header = data;
+        } else {
+            header = data[0];
+        }
+
         let div = document.getElementById('searchResult');
-        div.innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>"
+        const dataLocation = header.location;
+        const dataType = header.type;
+
+
+        div.innerHTML = "<h2>" + dataType + " for " + dataLocation + "</h2>" +
+            "<pre>" + JSON.stringify(data, null, 2) + "</pre>"
         ;
     }
 }

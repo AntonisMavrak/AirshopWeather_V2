@@ -1,4 +1,4 @@
-export function indexPage(data) {
+export function loginPage(data) {
     return `<h1 id="header">${data['h1']}</h1>
 <!-- Pills navs -->
 <div class="position">
@@ -103,7 +103,7 @@ export function buildPills() {
 
 }
 
-export function loginPage(data) {
+export function indexPage(data) {
     return `<div id="div">
     <div id="logout" class="div">
     <form action="logout" method="post">

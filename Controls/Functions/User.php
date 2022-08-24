@@ -31,8 +31,6 @@ class User
 
             } catch (\Exception $e) {
                 header("Location: loginpage.html");
-//                echo "<script>window.location.href = 'index.html'
-//                      alert('Something went wrong')</script>";
             }
         }
 
@@ -128,8 +126,6 @@ class User
             }
 
 //            $this->showSearch($pagesData, $historyFlag);
-
-//           header("Location: index.html");
 
         } else {
             echo '<script>alert("Insert Data !!!")</script>';
