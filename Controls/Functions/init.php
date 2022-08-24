@@ -45,7 +45,6 @@ class init
         parse_str($input, $data);
         $decodeInput = json_decode(json_encode($data), true);
         $user = new User();
-
         switch ($uri) {
             case 'register':
                 $user->register($decodeInput);
@@ -61,7 +60,7 @@ class init
                 break;
             case 'saved_data':
                 $data = new weatherData();
-                return json_encode($data->handleData(json_decode($input, true), $method), true);
+                return json_encode($data->handleData($this->sanitizeInput($input), $method), true);
             case 'error_log':
                 $error=new errorLog;
                 $error->recordError($input);

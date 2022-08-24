@@ -22,10 +22,12 @@ trait sanitizer
         $lastWord = array_pop($words);
         return preg_replace("/[^a-zα-ωά-ώ\d\/\-\._]+/u", '', $lastWord);
     }
-    public function sanitizeData($input)
-    {
-        //        TODO replace special chars
+    public function sanitizeInput($input){
+        $input=json_decode($input);
 
-        return preg_replace("/[^A-Za-zά-ώΑ-Ωα-ω\d\/\-\._\{\}:\"\,]+/u", '',  $input);
+        foreach( $input as $x => $val) {
+            $input->$x=preg_replace("/[^A-Za-zά-ώΑ-Ωα-ω\d\/\-\._\{\}:\"\,]+/u", '',  $input->$x);
+        }
+        return $input;
     }
 }

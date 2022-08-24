@@ -20,8 +20,8 @@ class weatherData
     private function checkData($input, $collection)
     {
 
-        $match = ['location' => $input['location'],
-            'type' => $input['type']];
+        $match = ['location' => $input->{"location"},
+            'type' => $input->{"type"}];
 
         $options = [
         ];
@@ -41,14 +41,13 @@ class weatherData
 
         if ($this->checkData($input, $collection) === false) {
             try {
-                $input['data']=$this->sanitizeData($input['data']);
-                $input['data'] = json_decode($input['data'], true);
+                $input->{"data"} = json_decode($input->{"data"}, true);
                 $date = new UTCDateTime();
                 $insertData = $collection->insertOne([
                     'expireAt' => $date,
-                    'location' => $input['location'],
-                    'type' => $input['type'],
-                    'data' => $input['data']
+                    'location' => $input->{"location"},
+                    'type' => $input->{"type"},
+                    'data' => $input->{"data"}
 
                 ]);
                 return true;
