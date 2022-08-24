@@ -62,6 +62,10 @@ class init
             case 'saved_data':
                 $data = new weatherData();
                 return json_encode($data->handleData(json_decode($input, true), $method), true);
+            case 'error_log':
+                $error=new errorLog;
+                $error->recordError($input);
+                break;
             default:
                 return false;
         }

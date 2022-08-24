@@ -2,6 +2,7 @@
 
 namespace Controls\Error;
 
+use Controls\Functions\errorLog;
 use Controls\Headers\headers;
 
 class errorException
@@ -18,7 +19,8 @@ class errorException
             "file" => $errFile,
             "line" => $errLine
         ];
-
+        $error=new errorLog;
+        $error->recordError($errorArray);
         $this->set_headers('json');
         echo json_encode($errorArray,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
         die;
@@ -35,7 +37,8 @@ class errorException
             "line" => $e->getLine(),
             "trace" => $e->getTrace()
         ];
-
+        $error=new errorLog;
+        $error->recordError($exceptionArray);
         $this->set_headers('json');
         echo json_encode($exceptionArray,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
         die;

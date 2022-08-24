@@ -1,4 +1,4 @@
-import zoneEnterEcho from "./dexie.mjs";
+import zoneEnterEcho from "./dexie.js";
 
 console.log('main.js ready');
 import {indexPage, buildPills, loginPage} from "../Templates/templates.js";
@@ -37,6 +37,7 @@ let weatherApp = {
 
 //          >>>>>>>>>Error/Success Handlers<<<<<<<<<<
     errorHandler(data) {
+        weatherApp.postError(data)
         return {
             'status': 'error',
             'message': data
@@ -133,6 +134,7 @@ let weatherApp = {
 
             // If message['location'] does not exist or is wrong
             if (msgJson['cod'] == '404') {
+                weatherApp.postError(msgJson);
                 console.log("Location that was passed does not exist or could not be found")
             } else {
                 weatherApp.postData("https://localhost/AirshopWeather_V2/index.html/saved_data", msg.data, message).then(() => {
@@ -274,6 +276,12 @@ let weatherApp = {
             default:
                 throw new Error("There was no correct data parsed");
         }
+    },postError:async (error)=>{
+        await fetch("https://localhost/AirshopWeather_V2/index.html/error_log", {
+            method: 'POST',
+            body: JSON.stringify(error),
+            headers: {'Content-Type': 'application/json'}
+        })
     }
 }
 
