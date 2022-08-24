@@ -18,8 +18,12 @@ class routing
 
         // Checks if page ends in '.html'
         if ((strlen($page) - strlen('.html')) === strrpos($page, '.html')) {
+
             $namePage = $this->sanitizePage($page);
-            return  $this->isRegisteredPage($namePage);
+            if($this->isRegisteredPage($namePage)===false){
+                return false;
+            }
+            return true;
         } else {
             echo 'Page does not end in .html';
             return  false;
@@ -28,7 +32,7 @@ class routing
     }
 
     // Checks if page is registered in MongoDB
-    private function isRegisteredPage($pageName): bool
+    public function isRegisteredPage($pageName)
     {
         $collection = $this->mongo('pages');
         $match = [
@@ -40,11 +44,16 @@ class routing
 
         $pagesData = $collection->findOne($match, $options);
 
+
         if ($pagesData!==null) {
-            return true;
+            $dataEncoded = json_encode($pagesData['template']['{{data}}'], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            $pagesData['template']['{{data}}'] = $dataEncoded;
+
+            return $pagesData['template'];
         }
         echo 'Page is not registered';
-        return false;
+        return  false;
     }
+
 
 }

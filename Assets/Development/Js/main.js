@@ -10,7 +10,8 @@ let weatherApp = {
         const pageData = JSON.parse(dataElement.innerText);
         let pageContainer = document.getElementById('container');
 
-        if(document.body.id === 'index'){
+        console.log(document.body.id)
+        if(document.body.id === 'loginpage'){
             pageContainer.insertAdjacentHTML('beforeend', weatherApp.buildApp(pageData));
             weatherApp.buildJavaS();
         }else{
@@ -181,6 +182,7 @@ let weatherApp = {
                 weatherApp.worker(data, exist);
             } else {
                 weatherApp.updateIndexedDB(mongoResponse, exist);
+                weatherApp.displaySData(mongoResponse, false);
             }
         })
             .catch((e) => {
@@ -213,6 +215,8 @@ let weatherApp = {
                     // Print from indexedDb
                     console.log("Data already in IndexedDB")
                 }
+                weatherApp.displaySData(response, true);
+
                 // If there is not a match in indexedDB
             } else if (response.length === 0 || existInIndexedDB === false) {
                 console.log("Getting new data from MongoDB to add in IndexedDB")
@@ -324,7 +328,7 @@ let weatherApp = {
             headers: {'Content-Type': 'application/json'}
         }).then(response => {
             // console.log(response);
-            response.json();
+            return response.json();
         }).catch((e) => {
             return weatherApp.errorHandler("getData Error: " + (e.stack || e));
         })
@@ -345,7 +349,6 @@ let weatherApp = {
 
             // delete div data
             if (searchResult.textContent.trim() !== '') {
-                console.log("mphka");
                 searchResult.textContent = '';
             }
 

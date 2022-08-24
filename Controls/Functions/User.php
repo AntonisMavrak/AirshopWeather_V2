@@ -15,8 +15,7 @@ class User
     {
 
         if ($this->isRegisteredUser($input['usernameR']) !== null) {
-            echo "<script>window.location.href = 'index.html'
-                  alert('User already exists')</script>";
+            header("Location: loginpage.html");
         } else {
             $collection = $this->mongo('users');
             try {
@@ -28,12 +27,12 @@ class User
                     'history' => []
                 ]);
 
-                echo "<script>window.location.href = 'index.html'
-                      alert('Registered successfully')</script>";
+                header("Location: loginpage.html");
 
             } catch (\Exception $e) {
-                echo "<script>window.location.href = 'index.html'
-                      alert('Something went wrong')</script>";
+                header("Location: loginpage.html");
+//                echo "<script>window.location.href = 'index.html'
+//                      alert('Something went wrong')</script>";
             }
         }
 
@@ -44,20 +43,21 @@ class User
     // If user exists then save id and name to session
     public function login($input)
     {
+
         $existingUser = $this->isRegisteredUser($input['usernameL']);
         if ($existingUser !== null) {
             if ($input['pwdL'] === $existingUser['password']) {
                 $_SESSION["usernameL"] = $input['usernameL'];
                 $_SESSION["id"] = $existingUser["_id"];
-                echo "<script>window.location.href = 'index.html'
-                      alert('Successfully logged in!!') </script>";
+
+                header("Location: index.html");
             } else {
-                echo "<script> window.location.href = 'index.html'
-                    alert('User does not exist') </script>";
+                echo "no";
+                header("Location: loginpage.html");
             }
         } else {
-            echo "<script> window.location.href = 'index.html'
-                        alert('User does not exist')</script>";
+            echo "no";
+            header("Location: loginpage.html");
         }
 
     }
@@ -69,8 +69,8 @@ class User
         unset($_SESSION["id"]);
         unset($_SESSION["usernameL"]);
         unset($_SESSION["pwdL"]);
-        echo "<script> window.location.href = 'index.html'
-              alert('Successfully logged out!!')</script>";
+
+        header("Location: loginpage.html");
     }
 
 
@@ -99,27 +99,27 @@ class User
         if ($historyData == !null) {
 
             try {
-            $collection = $this->mongo('users');
-            $match = [
-                'username' => $name
-            ];
-            $insert = ['$push' => [
-                $historyFlag => $historyData
-            ]
-            ];
-            $options = [
+                $collection = $this->mongo('users');
+                $match = [
+                    'username' => $name
+                ];
+                $insert = ['$push' => [
+                    $historyFlag => $historyData
+                ]
+                ];
+                $options = [
 
-            ];
-            $delete = ['$pop' =>
-                [$historyFlag => -1]
-            ];
+                ];
+                $delete = ['$pop' =>
+                    [$historyFlag => -1]
+                ];
 
-            $pagesData = $collection->findOne($match, $options);
+                $pagesData = $collection->findOne($match, $options);
 
-            if (count($pagesData[$historyFlag]) >= 10) {
-                $collection->updateOne($match, $delete);
-            }
-            $collection->updateOne($match, $insert);
+                if (count($pagesData[$historyFlag]) >= 10) {
+                    $collection->updateOne($match, $delete);
+                }
+                $collection->updateOne($match, $insert);
 
                 header("Location: index.html");
             } catch (\Exception $e) {

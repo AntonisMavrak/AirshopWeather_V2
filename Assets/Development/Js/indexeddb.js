@@ -1,4 +1,4 @@
-import Dexie from './dexie.js'
+import Dexie from './dexie.mjs'
 
 export const indexeddb = new Dexie('Weather_App');
 
