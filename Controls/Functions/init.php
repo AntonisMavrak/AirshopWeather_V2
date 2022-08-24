@@ -33,23 +33,16 @@ class init
 
               return  $this->run($router->isRegisteredPage('loginpage'));
             }
-
         }
     }
 
     // Checks which command the user requested
     public function runCommand($input, $method, $uri)
     {
-        
         $uri = $this->sanitizeUri($uri);
         parse_str($input, $data);
-//        var_dump($input);
-//        $in = json_decode($input,true);
         $decodeInput = json_decode(json_encode($data), true);
-
-
         $user = new User();
-
         switch ($uri) {
             case 'register':
                 $user->register($decodeInput);
@@ -72,11 +65,7 @@ class init
                 break;
             default:
                 return false;
-
-
         }
-
-
     }
 
     // Builds the page that is requested based of the string that was passed

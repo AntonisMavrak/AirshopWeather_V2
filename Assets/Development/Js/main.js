@@ -52,16 +52,13 @@ let weatherApp = {
     },
 
 
-
 //          >>>>>>>>>IndexedDb functions<<<<<<<<<<
     // Adds new document to indexedDB
     addToDatabase: async (data, indexedName) => {
 
-        console.log(data["location"])
         return await indexeddb[indexedName]
             .add(data)
             .then((location) => {
-                console.log(location);
                 return weatherApp.successHandler('Data added');
             })
             .catch((e) => {
@@ -124,8 +121,8 @@ let weatherApp = {
         }
         console.log("Data that was saved: ")
         console.log(data);
+        weatherApp.printData(data);
     },
-
 
 
 //          >>>>>>>>>Workers<<<<<<<<<<
@@ -141,6 +138,7 @@ let weatherApp = {
             if (msgJson['cod'] == '404') {
                 weatherApp.postError(msgJson);
                 console.log("Location that was passed does not exist or could not be found")
+                weatherApp.printData("Location that was passed does not exist or could not be found")
             } else {
                 weatherApp.postData("https://localhost/AirshopWeather_V2/index.html/saved_data", msg.data, message).then(() => {
                     console.log("Successfully updated Mongo from OpenWeatherAPI")
@@ -182,7 +180,6 @@ let weatherApp = {
                 weatherApp.worker(data, exist);
             } else {
                 weatherApp.updateIndexedDB(mongoResponse, exist);
-                weatherApp.displaySData(mongoResponse, false);
             }
         })
             .catch((e) => {
@@ -214,9 +211,8 @@ let weatherApp = {
                 } else {
                     // Print from indexedDb
                     console.log("Data already in IndexedDB")
+                    weatherApp.printData(response);
                 }
-                weatherApp.displaySData(response, true);
-
                 // If there is not a match in indexedDB
             } else if (response.length === 0 || existInIndexedDB === false) {
                 console.log("Getting new data from MongoDB to add in IndexedDB")
@@ -225,7 +221,36 @@ let weatherApp = {
         })
     },
 
+    runSearch: () => {
+        let form = document.getElementById('formSearch');
 
+        form.addEventListener('submit', function (e) {
+
+            // Prevent default behavior
+            e.preventDefault();
+
+            // Create new FormData object
+            const myFormData = new FormData(event.target);
+
+            const formDataObj = {};
+            myFormData.forEach((value, key) => (formDataObj[key] = value));
+
+            weatherApp.saveHistory(formDataObj);
+            weatherApp.dataHandler(formDataObj);
+        });
+    },
+
+    saveHistory: (data) => {
+
+        console.log(data)
+        fetch("https://localhost/AirshopWeather_V2/index.html/history", {
+            method: 'PUT',
+            body: JSON.stringify({history: data}),
+            headers: {'Content-Type': 'application/json'}
+        }).catch((e) => {
+            return weatherApp.errorHandler("getData Error: " + (e.stack || e));
+        })
+    },
 //          >>>>>>>>>Toolkit<<<<<<<<<<
 
     // Picks the correct 'table' from indexedDB that user requested
@@ -266,134 +291,21 @@ let weatherApp = {
                 throw new Error("There was no correct data parsed");
         }
     },
-    //          >>>>>>>>>Display Data<<<<<<<<<<
-    displaySData: (data, exist) => {
 
-        console.log(data);
-        let mainData = '';
-
-        if (!exist) {
-            mainData = data;
-        } else {
-            mainData = data[0];
-        }
-
-        // const airPollutionData = data[0]['data']['list'];
-        const searchResult = document.getElementById("searchResult");
-        const heading = document.createElement("h2");
-        const dataLocation = mainData.location;
-        const dataType = mainData.type;
-
-        heading.innerHTML = dataType + " for " + dataLocation;
-        searchResult.appendChild(heading);
-
-        switch (dataType) {
-            case "airPollution":
-                return weatherApp.airPollution(mainData, searchResult);
-                break;
-            case "weather":
-                return weatherApp.weather(mainData, searchResult);
-                break;
-            case "forecast":
-                return weatherApp.forecast(mainData, searchResult);
-                break;
-            default:
-                throw new Error("There was no correct input");
-        }
-
-    },
-    airPollution: (data, searchResult) => {
-    },
-    weather: (data, searchResult) => {
-        // const weatherIcon = document.createElement("img");
-        // weatherIcon.src = data.data['weather'][0].icon;
-        // searchResult.appendChild(weatherIcon);
-        // const paragraphW = document.createElement("p");
-        // paragraphW.innerHTML = data.data['weather'][0].description;
-        //
-        // searchResult.appendChild(paragraphW);
-        //
-        // console.log(data.data['weather'][0].description);
-
-
-    },
-    forecast: (data, searchResult) => {
-    },
-    //          >>>>>>>>>Save Data<<<<<<<<<<
-    saveHistory: (data) => {
-
-        fetch("https://localhost/AirshopWeather_V2/index.html/history", {
-            method: 'PUT',
-            body: JSON.stringify({history: data}),
-            headers: {'Content-Type': 'application/json'}
-        }).then(response => {
-            // console.log(response);
-            return response.json();
-        }).catch((e) => {
-            return weatherApp.errorHandler("getData Error: " + (e.stack || e));
-        })
-    },
-    //          >>>>>>>>>Search Data<<<<<<<<<<
-    runSearch: () => {
-        const form = document.getElementById('formSearch');
-        const city = document.getElementById('cityName');
-        const country = document.getElementById('countryName');
-        const type = document.getElementById('searchSelect');
-        const searchResult = document.getElementById("searchResult");
-
-
-        form.addEventListener('submit', function (e) {
-
-            // Prevent default behavior
-            e.preventDefault();
-
-            // delete div data
-            if (searchResult.textContent.trim() !== '') {
-                searchResult.textContent = '';
-            }
-
-            // Create new FormData object
-            const myFormData = new FormData(event.target);
-
-            const formDataObj = {};
-            myFormData.forEach((value, key) => (formDataObj[key] = value));
-            console.log(formDataObj);
-
-            city.value = "";
-            country.value = "";
-            type.value = "";
-
-
-            weatherApp.saveHistory(formDataObj);
-            weatherApp.dataHandler(formDataObj);
-        });
-
-        },
     postError: async (error) => {
         await fetch("https://localhost/AirshopWeather_V2/index.html/error_log", {
             method: 'POST',
             body: JSON.stringify(error),
             headers: {'Content-Type': 'application/json'}
         })
-    },sanitizeData:()=>{
+    },
 
-
-
-        }
-
+    printData: (data) => {
+        let div = document.getElementById('searchResult');
+        div.innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>"
+        ;
+    }
 }
 
-
-// let message = {
-//     'Location': 'Thessaloniki',
-//     'Type': 'forecast'
-// }
-// weatherApp.worker(message);
-// weatherApp.getData(data);
-
-
-// let data = {type: 'forecast', location: 'Thessaloniki'}
-// weatherApp.getData(data, false);
 weatherApp.init();
-// let data = {type: 'airPollution', location: 'Thessaloniki'}
-// weatherApp.dataHandler(data);
+

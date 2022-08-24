@@ -143,6 +143,7 @@ export function loginPage(data) {
                 </form>
             </div>
         </div>
+        
         </div>
     <div id="searchResult" >
     </div>`;
