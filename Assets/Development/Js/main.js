@@ -10,12 +10,17 @@ let weatherApp = {
         const pageData = JSON.parse(dataElement.innerText);
         let pageContainer = document.getElementById('container');
 
-        if (document.body.id === 'index') {
+        if(document.body.id === 'index'){
             pageContainer.insertAdjacentHTML('beforeend', weatherApp.buildApp(pageData));
             weatherApp.buildJavaS();
-        } else {
+        }else{
             pageContainer.insertAdjacentHTML('beforeend', weatherApp.buildData(pageData));
             weatherApp.runSearch();
+            //weatherApp.getSearchData();
+            // weatherApp.postData();
+            //weatherApp.changeAction();
+
+            //weatherApp.getFData();
         }
     },
 
@@ -32,6 +37,7 @@ let weatherApp = {
 
 //          >>>>>>>>>Error/Success Handlers<<<<<<<<<<
     errorHandler(data) {
+        weatherApp.postError(data)
         return {
             'status': 'error',
             'message': data
@@ -43,6 +49,7 @@ let weatherApp = {
             'message': data
         }
     },
+
 
 
 //          >>>>>>>>>IndexedDb functions<<<<<<<<<<
@@ -96,7 +103,7 @@ let weatherApp = {
         // If not exist in IndexedDB
         if (!exist) {
             //Insert in indexedDB
-            console.log("New location data added")
+            console.log("New location '" + data['location'] + "' added in IndexedDB")
             weatherApp.addToDatabase(data, indexedName).then((result) => {
                 // Here print data to front end
                 return weatherApp.successHandler('Added: ' + result)
@@ -105,7 +112,7 @@ let weatherApp = {
             })
         } else {
             //Update in indexedDB
-            console.log("Document updated")
+            console.log("Document '" + data['location'] + "' updated in IndexedDB")
             weatherApp.modifyDocument(data['location'], data, indexedName).then((result) => {
                 // Here print data to front end
                 return weatherApp.successHandler('Updated: ' + result)
@@ -114,8 +121,10 @@ let weatherApp = {
             })
 
         }
+        console.log("Data that was saved: ")
         console.log(data);
     },
+
 
 
 //          >>>>>>>>>Workers<<<<<<<<<<
@@ -125,30 +134,32 @@ let weatherApp = {
 
         myWorker.postMessage(message);
         myWorker.onmessage = (msg) => {
-            weatherApp.postData("https://localhost/AirshopWeather_V2/index.html/saved_data", msg.data, message).then(() => {
-                console.log("Successfully updated Mongo from API")
-                // Call function
-                weatherApp.getData(message, exist);
-            })
+            const msgJson = JSON.parse(msg.data)
 
+            // If message['location'] does not exist or is wrong
+            if (msgJson['cod'] == '404') {
+                weatherApp.postError(msgJson);
+                console.log("Location that was passed does not exist or could not be found")
+            } else {
+                weatherApp.postData("https://localhost/AirshopWeather_V2/index.html/saved_data", msg.data, message).then(() => {
+                    console.log("Successfully updated Mongo from OpenWeatherAPI")
+                    // Call function
+                    weatherApp.getData(message, exist);
+                })
+            }
         }
 
         return myWorker;
     },
 
-    indexedDBWorker: () => {
-        const dbWorker = new Worker('./Assets/Development/Workers/indexeddbWorker.js');
-        dbWorker.postMessage("asg")
-    },
-
 
 //          >>>>>>>>>Data Handlers<<<<<<<<<<
+
     // Post data from the API to the MongoDB
     postData: async (url, data, requestedData) => {
         const response = await fetch(url, {
             method: 'PUT',
-            body: JSON.stringify({data: data, type: requestedData['type'], location: requestedData['location']}),  /*TODO fix type and
-                                                                                                        location to be inputted by front end */
+            body: JSON.stringify({data: data, type: requestedData['type'], location: requestedData['location']}),
             headers: {'Content-Type': 'text/html'}
         });
         return response;
@@ -162,17 +173,14 @@ let weatherApp = {
             body: JSON.stringify(data),
             headers: {'Content-Type': 'application/json'}
         }).then(response => {
-            console.log(data);
             return response.json();
         }).then((mongoResponse) => {
-            console.log(mongoResponse);
             // If Mongo does not have the data
             if (mongoResponse === false) {
                 // Call worker to fetch them from the API
                 weatherApp.worker(data, exist);
             } else {
                 weatherApp.updateIndexedDB(mongoResponse, exist);
-                weatherApp.displaySData(mongoResponse, false);
             }
         })
             .catch((e) => {
@@ -186,8 +194,6 @@ let weatherApp = {
 
         const indexedName = weatherApp.indexedPicker(data['type']);
         const storedData = weatherApp.getStoredData(indexedName, data['location']);
-
-
         let existInIndexedDB = false;
         storedData.then(response => {
 
@@ -205,19 +211,14 @@ let weatherApp = {
                     weatherApp.getData(data, existInIndexedDB);
                 } else {
                     // Print from indexedDb
-                    console.log(response)
-                    console.log("Data is already in IndexedDB")
+                    console.log("Data already in IndexedDB")
                 }
-                weatherApp.displaySData(response, true);
-
                 // If there is not a match in indexedDB
             } else if (response.length === 0 || existInIndexedDB === false) {
-                console.log("Getting data from Mongo to add new")
+                console.log("Getting new data from MongoDB to add in IndexedDB")
                 weatherApp.getData(data, existInIndexedDB);
-
             }
-
-        });
+        })
     },
 
 
@@ -360,12 +361,23 @@ let weatherApp = {
             type.value = "";
 
 
-             weatherApp.saveHistory(formDataObj);
+            weatherApp.saveHistory(formDataObj);
             weatherApp.dataHandler(formDataObj);
-
-
         });
-    }
+
+        },
+    postError: async (error) => {
+        await fetch("https://localhost/AirshopWeather_V2/index.html/error_log", {
+            method: 'POST',
+            body: JSON.stringify(error),
+            headers: {'Content-Type': 'application/json'}
+        })
+    },sanitizeData:()=>{
+
+
+
+        }
+
 }
 
 

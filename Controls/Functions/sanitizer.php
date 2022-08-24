@@ -4,7 +4,7 @@ namespace Controls\Functions;
 
 trait sanitizer
 {
-    public function sanitazePage($uri): string
+    public function sanitizePage($uri): string
     {
         //        TODO get the last word *.html
         //        TODO replace special chars
@@ -15,19 +15,18 @@ trait sanitizer
         return preg_replace("/\.html$/", '', $lastWord);
     }
 
-    public function sanitazeUri($uri): string
+    public function sanitizeUri($uri): string
     {
         //        TODO replace special chars
         $words = explode('/', $uri);
         $lastWord = array_pop($words);
         return preg_replace("/[^a-zα-ωά-ώ\d\/\-\._]+/u", '', $lastWord);
     }
-    public function sanitazeData($input)
-    {
-        //        TODO replace special chars
-        foreach ($input as $x=>$value) {
-            $input[$x]=preg_replace("/[^A-Za-zά-ώΑ-Ω\d\/\-\._]+/u", '', $value);
+    public function sanitizeInput($input){
+        $input=json_decode($input);
 
+        foreach( $input as $x => $val) {
+            $input->$x=preg_replace("/[^A-Za-zά-ώΑ-Ωα-ω\d\/\-\._\{\}:\"\,]+/u", '',  $input->$x);
         }
         return $input;
     }

@@ -11,6 +11,9 @@ class init
     use sanitizer;
     use Database;
 
+    // Checks if user send something with the request
+    // If send something run the correct command
+    // Else redirect him to the page that was requested
     public function load()
     {
         $router = new routing();
@@ -35,13 +38,13 @@ class init
         }
     }
 
+    // Checks which command the user requested
     public function runCommand($input, $method, $uri)
     {
-
-        $uri = $this->sanitazeUri($uri);
+        $uri = $this->sanitizeUri($uri);
         parse_str($input, $data);
 //        var_dump($input);
-        $inputJs = json_decode($input,true);
+//        $in = json_decode($input,true);
         $decodeInput = json_decode(json_encode($data), true);
 
         //var_dump($decodeInput);
@@ -59,11 +62,15 @@ class init
                 $user->logout();
                 break;
             case'history':
-                $user->saveSearch($inputJs, $uri);
+                $user->saveSearch($input, $uri);
                 break;
             case 'saved_data':
                 $data = new weatherData();
-                return json_encode($data->handleData($inputJs, $method), true);
+                return json_encode($data->handleData($this->sanitizeInput($input), $method), true);
+            case 'error_log':
+                $error=new errorLog;
+                $error->recordError($input);
+                break;
             default:
                 return false;
 
@@ -73,6 +80,7 @@ class init
 
     }
 
+    // Builds the page that is requested based of the string that was passed
     public function run($template): string
     {
 //        $data=[
@@ -115,6 +123,7 @@ class init
 //     }
 // }
 
+    // Checks if page is registered in the MongoDB
     public function isRegisteredPage($name)
     {
         $collection = $this->mongo('pages');
