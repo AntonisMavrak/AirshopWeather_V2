@@ -8,7 +8,7 @@ use MongoDB\BSON\UTCDateTime;
 class weatherData
 {
     use Database;
-
+    use sanitizer;
     // Handles the data based on the method that was requested
     function handleData($input, $method)
     {
@@ -41,6 +41,7 @@ class weatherData
 
         if ($this->checkData($input, $collection) === false) {
             try {
+                $input['data']=$this->sanitizeData($input['data']);
                 $input['data'] = json_decode($input['data'], true);
                 $date = new UTCDateTime();
                 $insertData = $collection->insertOne([
