@@ -23,7 +23,6 @@ class init
         session_start();
         session_regenerate_id(true);
 
-
         if (!empty($input)) {
 
             return $this->runCommand($input, $_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
@@ -56,7 +55,7 @@ class init
                 $user->logout();
                 break;
             case'history':
-                $user->saveSearch($decodeInput, $uri);
+                $user->saveSearch($input, $uri);
                 break;
             case 'saved_data':
                 $data = new weatherData();
