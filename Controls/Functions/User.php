@@ -91,7 +91,7 @@ class User
         $inputHistory = (json_decode($input)->{"history"});
 
         $name = $_SESSION["usernameL"];
-        $historyData = $inputHistory->{"type"} . ", " . $inputHistory->{"location"} . ", " . $inputHistory->{"sCountry"};
+        $historyData = $inputHistory->{"type"} . ", " . $inputHistory->{"location"};
 
 
         if ($historyData == !null) {

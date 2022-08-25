@@ -123,10 +123,6 @@ export function indexPage(data) {
                     <div id="searchCity">
                         <input type="text" name="location" placeholder="Enter City Name" id="cityName" required>
                     </div>
-                    <!-- Country input -->
-                    <div id="searchCountry">
-                        <input type="text" name="sCountry" placeholder="Enter Country Name" id="countryName" required>
-                    </div>
                     <!-- Search Type input -->
                     <div id="searchType">
                     <select name="type" id="searchSelect" required>

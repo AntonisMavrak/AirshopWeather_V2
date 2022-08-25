@@ -125,7 +125,7 @@ button:hover {
     flex-flow: row wrap;
     align-items: center;
 }
-#cityName, #countryName, #searchSelect, #searchBtn{
+#cityName, #searchSelect, #searchBtn{
     margin-inline: 8px;
 }
 
@@ -138,12 +138,13 @@ button:hover {
     font-family: "Arial Narrow";
 }
 
+
 .sizeButton{
     width: 100%;
 }
 @media (max-width: 800px) {
 
-    #cityName, #countryName, #searchSelect, #searchBtn{
+    #cityName, #searchSelect, #searchBtn{
         margin-block: 10px;
         margin-inline: 0;
     }
