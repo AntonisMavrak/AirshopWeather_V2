@@ -10,7 +10,6 @@ return array(
     'MongoDB\\' => array($vendorDir . '/mongodb/mongodb/src'),
     'Jean85\\' => array($vendorDir . '/jean85/pretty-package-versions/src'),
     'Controls\\Router\\' => array($baseDir . '/Controls/Router'),
-    'Controls\\Pages\\' => array($baseDir . '/Controls/Pages'),
     'Controls\\Headers\\' => array($baseDir . '/Controls/Headers'),
     'Controls\\Functions\\' => array($baseDir . '/Controls/Functions'),
     'Controls\\Error\\' => array($baseDir . '/Controls/Error'),

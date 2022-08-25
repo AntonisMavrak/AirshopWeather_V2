@@ -15,7 +15,8 @@ class User
     {
 
         if ($this->isRegisteredUser($input['usernameR']) !== null) {
-            header("Location: loginpage.html");
+            echo "<script>window.location.href = 'loginpage.html'
+                  alert('User already exists')</script>";
         } else {
             $collection = $this->mongo('users');
             try {
@@ -26,11 +27,12 @@ class User
                     'password' => $input['pwdR'],
                     'history' => []
                 ]);
-
-                header("Location: loginpage.html");
+                echo "<script>window.location.href = 'loginpage.html'
+                      alert('Registered successfully')</script>";
 
             } catch (\Exception $e) {
-                header("Location: loginpage.html");
+                echo "error message: " . $e->getMessage() . "\n";
+                echo "error code: " . $e->getCode() . "\n";
             }
         }
 
@@ -50,12 +52,12 @@ class User
 
                 header("Location: index.html");
             } else {
-                echo "no";
-                header("Location: loginpage.html");
+                echo "<script>window.location.href = 'loginpage.html'
+                      alert('Wrong password')</script>";
             }
         } else {
-            echo "no";
-            header("Location: loginpage.html");
+            echo "<script>window.location.href = 'loginpage.html'
+                      alert('Not registered user!')</script>";
         }
 
     }
@@ -75,13 +77,18 @@ class User
     // Checks database if user is registered in database
     public function isRegisteredUser($name)
     {
-        $collection = $this->mongo('users');
-        $match = [
-            'username' => $name
-        ];
-        $options = [
-        ];
-        return $collection->findOne($match, $options);
+        try {
+            $collection = $this->mongo('users');
+            $match = [
+                'username' => $name
+            ];
+            $options = [
+            ];
+            return $collection->findOne($match, $options);
+        } catch (\Exception $e) {
+            echo "error message: " . $e->getMessage() . "\n";
+            echo "error code: " . $e->getCode() . "\n";
+        }
     }
 
     // Saves the last 10 searches that the user chose

@@ -225,9 +225,9 @@ let weatherApp = {
             e.preventDefault();
 
             // refresh div
-            if (searchResult.textContent !== '') {
-                searchResult.textContent = '';
-            }
+            // if (searchResult.textContent !== '') {
+            //     searchResult.textContent = '';
+            // }
 
             // Create new FormData object
             const myFormData = new FormData(event.target);
@@ -295,6 +295,7 @@ let weatherApp = {
                 throw new Error("There was no correct data parsed");
         }
     },
+
 //          >>>>>>>>>Save errors<<<<<<<<<<
     postError: async (error) => {
         await fetch("https://localhost/AirshopWeather_V2/index.html/error_log", {
@@ -320,56 +321,36 @@ let weatherApp = {
 
         console.log(data);
 
-        if(dataType!=='weather'){
-            return div.innerHTML = "<h2>" + dataType + " for " + dataLocation + "</h2>" +
+        div.innerHTML = "<h2>" + dataType + " for " + dataLocation + "</h2>" +
                 "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
-        }else{
-            const dataId = header.data['id'];
-            return  weatherApp.displayWeatherWidget(dataId);
-        }
+        // if(dataType!=='weather'){
+        //     return div.innerHTML = "<h2>" + dataType + " for " + dataLocation + "</h2>" +
+        //         "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
+        // }else{
+        //     const dataId = header.data['id'];
+        //     return  weatherApp.displayWeatherWidget(dataId);
+        // }
     },
-    displayWeatherWidget: (id) => {
-        const scriptWidgetW = document.getElementById('widget');
-
-        window.myWidgetParam ? window.myWidgetParam : window.myWidgetParam = [];
-        window.myWidgetParam.push({
-            id: 15,
-            cityid: id,
-            appid: 'c82ec9850c26c555aebf1467c733fb37',
-            units: 'metric',
-            containerid: 'searchResult',
-        });
-        if (scriptWidgetW !== null) {
-            scriptWidgetW.remove();
-        }
-        (function () {
-            var script = document.createElement('script');
-            script.async = true;
-            script.charset = "utf-8";
-            script.id = "widget"
-            script.src = "//openweathermap.org/themes/openweathermap/assets/vendor/owm/js/weather-widget-generator.js";
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(script, s);
-        })();
-    }
-    // displayForecastrWidget: (id) => {
-    //     const scriptWidgetF = document.getElementById('widgetF');
+    // displayWeatherWidget: (id) => {
+    //     const scriptWidgetW = document.getElementById('widget');
     //
     //     window.myWidgetParam ? window.myWidgetParam : window.myWidgetParam = [];
     //     window.myWidgetParam.push({
-    //         id: 11,
+    //         id: 15,
     //         cityid: id,
     //         appid: 'c82ec9850c26c555aebf1467c733fb37',
     //         units: 'metric',
     //         containerid: 'searchResult',
     //     });
-    //
+    //     if (scriptWidgetW !== null) {
+    //         scriptWidgetW.remove();
+    //     }
     //     (function () {
     //         var script = document.createElement('script');
     //         script.async = true;
     //         script.charset = "utf-8";
-    //         script.id = "theme"
-    //         script.src = "https://openweathermap.org/themes/openweathermap/assets/vendor/owm/js/d3.min.js";
+    //         script.id = "widget"
+    //         script.src = "//openweathermap.org/themes/openweathermap/assets/vendor/owm/js/weather-widget-generator.js";
     //         var s = document.getElementsByTagName('script')[0];
     //         s.parentNode.insertBefore(script, s);
     //     })();

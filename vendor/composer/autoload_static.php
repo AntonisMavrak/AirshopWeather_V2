@@ -27,7 +27,6 @@ class ComposerStaticInitbbf2211cb7a03c741cd5ccd631702aab
         'C' => 
         array (
             'Controls\\Router\\' => 16,
-            'Controls\\Pages\\' => 15,
             'Controls\\Headers\\' => 17,
             'Controls\\Functions\\' => 19,
             'Controls\\Error\\' => 15,
@@ -51,10 +50,6 @@ class ComposerStaticInitbbf2211cb7a03c741cd5ccd631702aab
         'Controls\\Router\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Controls/Router',
-        ),
-        'Controls\\Pages\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/Controls/Pages',
         ),
         'Controls\\Headers\\' => 
         array (
