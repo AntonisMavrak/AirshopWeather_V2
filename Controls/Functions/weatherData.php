@@ -9,6 +9,7 @@ class weatherData
 {
     use Database;
     use sanitizer;
+
     // Handles the data based on the method that was requested
     function handleData($input, $method)
     {

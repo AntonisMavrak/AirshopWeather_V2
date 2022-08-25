@@ -9,9 +9,9 @@ onmessage = (event) => {
         case 'airPollution':
             findLocation(event.data['location']).then((response) => {
                 // City passed does not exist or could not be found
-                if (response.length === 0){
+                if (response.length === 0) {
                     postMessage('{"cod":"404"}');
-                }else {
+                } else {
                     airPollution(response[0].lat, response[0].lon).then((response) => {
                         postMessage(JSON.stringify(response));
                     })
@@ -21,9 +21,9 @@ onmessage = (event) => {
         case'forecast':
             findLocation(event.data['location']).then((response) => {
                 // City passed does not exist or could not be found
-                if (response.length === 0){
+                if (response.length === 0) {
                     postMessage('{"cod":"404"}');
-                }else {
+                } else {
                     weatherForecast(response[0].lat, response[0].lon).then((response) => {
                         postMessage(JSON.stringify(response));
                     })
@@ -51,7 +51,7 @@ let getWeather = async (city_select) => {
 }
 
 // Returns the air pollution data as JSON of the lat and lon location that is passed
-let airPollution = async (lat,lon) => {
+let airPollution = async (lat, lon) => {
     let key = '80d2ff5f959352f4319d73dc1f0171ce';
     return fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${key}`,
         {method: 'GET'}
@@ -67,7 +67,7 @@ let airPollution = async (lat,lon) => {
 }
 
 // Returns the forecast as JSON of the lat and lon location that is passed
-let weatherForecast = async (lat,lon) => {
+let weatherForecast = async (lat, lon) => {
 
     let key = '80d2ff5f959352f4319d73dc1f0171ce';
     return fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${key}`,

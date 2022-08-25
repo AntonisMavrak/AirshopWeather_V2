@@ -17,6 +17,7 @@ export function loginPage(data) {
 
     <!-- Pills content -->
     <div id="main">
+        <!-- Login -->
         <div id="login">
             <form action="login" method="post" id="formL" >
                 <!-- Email input -->
@@ -36,7 +37,7 @@ export function loginPage(data) {
 
             </form>
         </div>
-
+        <!-- Register -->
         <div id="register" hidden>
             <form action="register" method="post" id="formR">
                 <!-- Name input -->
@@ -67,6 +68,7 @@ export function loginPage(data) {
             </form>
         </div>
     </div>
+    <!-- Pills content -->
 </div>
 </div>`
 }
@@ -105,19 +107,23 @@ export function buildPills() {
 
 export function indexPage(data) {
     return `<div id="div">
+<!-- Logout -->
     <div id="logout" class="div">
     <form action="logout" method="post">
         <button type="submit" name="buttonLO" class="sizeButton">${data['buttonLO']}</button>
     </form>
     </div>
+<!-- Logout -->
+
     <div id="head" class="div">
         <h1 id="header">${data['h1']}</h1>
     </div>
 </div>
+<!-- Data Container -->
 <div id="content" class="tabSearch">
         <div id="mainSearch">
             <div id="search">
-<!--            action="history" method="post"onsubmit="return getFormData()"-->
+            <!-- Search Form -->
                 <form id="formSearch" class="inline">
                     <!-- City input -->
                     <div id="searchCity">
@@ -131,18 +137,16 @@ export function indexPage(data) {
                          <option value="airPollution">${data['optionS3']}</option>  
                          <option value="forecast">${data['optionS4']}</option>
                     </select>
-<!--                        <input type="text" name="sType" placeholder="Enter your search" id="mySearch" required>-->
-
                     </div>
                     <!-- Submit button -->
                     <button type="submit" name="submitSearch" id="searchBtn">${data['buttonSearch']}</button>
                 </form>
             </div>
-        </div>
-        
-        </div>
-    <div id="searchResult" >
-    </div>`;
+        </div> 
+</div>
+<!-- Data Container --> 
+<!-- Data Result --> 
+    <div id="searchResult" ></div>`;
 
 }
 

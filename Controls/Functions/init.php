@@ -26,12 +26,12 @@ class init
             return $this->runCommand($input, $_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
         } else if ($router->routing($request)) {
 
-            if(isset($_SESSION["usernameL"])){
+            if (isset($_SESSION["usernameL"])) {
 
-               return  $this->run($router->isRegisteredPage('index'));
-            }else{
+                return $this->run($router->isRegisteredPage('index'));
+            } else {
 
-              return  $this->run($router->isRegisteredPage('loginpage'));
+                return $this->run($router->isRegisteredPage('loginpage'));
             }
 
         }
@@ -61,7 +61,7 @@ class init
                 $data = new weatherData();
                 return json_encode($data->handleData($this->sanitizeInput($input), $method), true);
             case 'error_log':
-                $error=new errorLog;
+                $error = new errorLog;
                 $error->recordError($input);
                 break;
             default:
@@ -74,7 +74,7 @@ class init
     {
         $bluePrint = file_get_contents('Views/Html/htmlBlueprint.tpl');
 
-        $arrayTemplate = (array) $template;
+        $arrayTemplate = (array)$template;
 
 
         return strtr($bluePrint, $arrayTemplate);

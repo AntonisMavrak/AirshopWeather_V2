@@ -322,7 +322,7 @@ let weatherApp = {
         console.log(data);
 
         div.innerHTML = "<h2>" + dataType + " for " + dataLocation + "</h2>" +
-                "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
+            "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
         // if(dataType!=='weather'){
         //     return div.innerHTML = "<h2>" + dataType + " for " + dataLocation + "</h2>" +
         //         "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
