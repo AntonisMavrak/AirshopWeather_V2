@@ -4,7 +4,7 @@ namespace Controls\Error;
 
 use Controls\Functions\errorLog;
 use Controls\Headers\headers;
-
+ 
 class errorException
 {
     use headers;
